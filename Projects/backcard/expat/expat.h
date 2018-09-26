@@ -14,19 +14,7 @@ enum{
 	cunpack_authack,
 	cunpack_ping,
 	cunpack_pong,
-	cunpack_message,
-	cunpack_position,
-	cunpack_warning,
-	cunpack_log,
-	cunpack_reqcode,
-	cunpack_dyncode,
-	cunpack_taskpau,
-	cunpack_taskcon,
-	cunpack_taskdone,
-	cunpack_status,
-	cunpack_awake,
-	cunpack_verify,
-	cunpack_config
+	cunpack_printack	
 };
 
 

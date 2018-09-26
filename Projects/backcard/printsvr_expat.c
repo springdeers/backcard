@@ -18,11 +18,10 @@ static int  explain(printsvr_exp_t exp, uchar*frame, int len);
 static SMsgTitle_st  MSGTitle[] =
 {
 	{ cunpack_initack, "$initack" }, 
-	{ cunpack_auth, "$auth" },
-	{ cunpack_warning, "$warn" },
-	{ cunpack_dyncode, "$dyncode" },
+	{ cunpack_authack, "$auth" },
 	{ cunpack_pong, "$pong" },
-	{ cunpack_verify, "$verify" }
+	{ cunpack_printack, "$printack" },
+	
 };
 
 static int istitle(uchar* str)

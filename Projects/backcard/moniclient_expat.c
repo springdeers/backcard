@@ -17,15 +17,6 @@ static SMsgTitle_st MSGTitle[] =
 {
 	{cunpack_ping,"$ping"},
 	{ cunpack_auth,"$auth"},
-	{ cunpack_position,"$pos" },
-	{cunpack_warning,"$warn"},
-	{ cunpack_log, "$log" },
-	{ cunpack_reqcode, "$reqcode" },
-	{ cunpack_taskpau, "$taskpau" },
-	{ cunpack_taskcon, "$taskcon" },
-	{ cunpack_taskdone, "$taskdone" },
-	{ cunpack_status, "$sta"},
-	{ cunpack_awake, "$awake" }
 };
 
 static int istitle(uchar* str)
