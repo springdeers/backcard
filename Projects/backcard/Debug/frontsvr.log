@@ -1,0 +1,144 @@
+﻿生成启动时间为 9/26/2018 4:50:15 PM。
+     1>项目“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\Projects\frontsvr\frontsvr.vcxproj”在节点 2 上(Build 个目标)。
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(388,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (frontsvr.vcxproj, smcacheserver.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D HAVE_CONFIG_H /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:prompt moniclient_callback.c moniclient_expat.c opensess_exp.c main.c protobuffer.c forward.c warnsvr_callback.c
+         warnsvr_callback.c
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\jabber\util\inaddr.h(72): warning C4005: “SOCKET_ERROR”: 宏重定义
+                 c:\program files (x86)\windows kits\8.1\include\um\winsock2.h(392) : 参见“SOCKET_ERROR”的前一个定义
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\tool.h(7): warning C4005: “NULL”: 宏重定义
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(36) : 参见“NULL”的前一个定义
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\tools\win32_interop\win32_types_hiredis.h(44): warning C4142: 类型的良性重定义
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\warnsvr_callback.c(38): warning C4101: “destsess”: 未引用的局部变量
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\warnsvr_callback.c(37): warning C4101: “p2p”: 未引用的局部变量
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\warnsvr_callback.c(174): warning C4033: “auth_hook”必须返回值
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\warnsvr_callback.c(181): warning C4033: “auth_hook”必须返回值
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\warnsvr_callback.c(189): warning C4033: “auth_hook”必须返回值
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\warnsvr_callback.c(243): warning C4033: “save_warning”必须返回值
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\warnsvr_callback.c(249): warning C4033: “save_warning”必须返回值
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\warnsvr_callback.c(257): warning C4033: “save_warning”必须返回值
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\warnsvr_callback.c(265): warning C4033: “save_warning”必须返回值
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\warnsvr_callback.c(274): warning C4033: “save_warning”必须返回值
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\warnsvr_callback.c(289): warning C4033: “save_warning”必须返回值
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\warnsvr_callback.c(349): warning C4101: “destsess”: 未引用的局部变量
+         forward.c
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\jabber\util\inaddr.h(72): warning C4005: “SOCKET_ERROR”: 宏重定义
+                 c:\program files (x86)\windows kits\8.1\include\um\winsock2.h(392) : 参见“SOCKET_ERROR”的前一个定义
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\tool.h(7): warning C4005: “NULL”: 宏重定义
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(36) : 参见“NULL”的前一个定义
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\tools\win32_interop\win32_types_hiredis.h(44): warning C4142: 类型的良性重定义
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\forward.c(166): warning C4098: “forward_log_x_to_monitor”:“void”函数返回值
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\forward.c(174): warning C4098: “forward_log_x_to_monitor”:“void”函数返回值
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\forward.c(182): warning C4098: “forward_log_x_to_monitor”:“void”函数返回值
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\forward.c(301): warning C4098: “forward_log_dyncode_to_monitor”:“void”函数返回值
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\forward.c(309): warning C4098: “forward_log_dyncode_to_monitor”:“void”函数返回值
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\forward.c(317): warning C4098: “forward_log_dyncode_to_monitor”:“void”函数返回值
+         protobuffer.c
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\jabber\util\inaddr.h(72): warning C4005: “SOCKET_ERROR”: 宏重定义
+                 c:\program files (x86)\windows kits\8.1\include\um\winsock2.h(392) : 参见“SOCKET_ERROR”的前一个定义
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\tool.h(7): warning C4005: “NULL”: 宏重定义
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(36) : 参见“NULL”的前一个定义
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\tools\win32_interop\win32_types_hiredis.h(44): warning C4142: 类型的良性重定义
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\protobuffer.c(156): warning C4013: “logger”未定义；假设外部返回 int
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\protobuffer.c(156): warning C4047: “函数”:“log_t”与“int”的间接级别不同
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\protobuffer.c(156): warning C4024: “log_write”: 形参和实参 1 的类型不同
+         main.c
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\jabber\util\inaddr.h(72): warning C4005: “SOCKET_ERROR”: 宏重定义
+                 c:\program files (x86)\windows kits\8.1\include\um\winsock2.h(392) : 参见“SOCKET_ERROR”的前一个定义
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\tool.h(7): warning C4005: “NULL”: 宏重定义
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(36) : 参见“NULL”的前一个定义
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\tools\win32_interop\win32_types_hiredis.h(44): warning C4142: 类型的良性重定义
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\main.c(143): warning C4101: “szvalue”: 未引用的局部变量
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\main.c(236): warning C4133: “函数”: 从“mysqlquery_t”到“const char *”的类型不兼容
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\main.c(236): warning C4133: “=”: 从“mysqlquery_t”到“char *”的类型不兼容
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\main.c(252): warning C4133: “函数”: 从“mysqlquery_t”到“const char *”的类型不兼容
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\main.c(254): warning C4133: “函数”: 从“mysqlquery_t”到“const char *”的类型不兼容
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\main.c(446): warning C4244: “函数”: 从“time_t”转换到“int”，可能丢失数据
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\main.c(601): warning C4029: 声明的形参表不同于定义
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\main.c(608): warning C4133: “函数”: 从“void **”到“mysqlquery_t *”的类型不兼容
+         opensess_exp.c
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\jabber\util\inaddr.h(72): warning C4005: “SOCKET_ERROR”: 宏重定义
+                 c:\program files (x86)\windows kits\8.1\include\um\winsock2.h(392) : 参见“SOCKET_ERROR”的前一个定义
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\tool.h(7): warning C4005: “NULL”: 宏重定义
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(36) : 参见“NULL”的前一个定义
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\tools\win32_interop\win32_types_hiredis.h(44): warning C4142: 类型的良性重定义
+         moniclient_expat.c
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\jabber\util\inaddr.h(72): warning C4005: “SOCKET_ERROR”: 宏重定义
+                 c:\program files (x86)\windows kits\8.1\include\um\winsock2.h(392) : 参见“SOCKET_ERROR”的前一个定义
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\tool.h(7): warning C4005: “NULL”: 宏重定义
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\stdlib.h(39) : 参见“NULL”的前一个定义
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\tools\win32_interop\win32_types_hiredis.h(44): warning C4142: 类型的良性重定义
+         moniclient_callback.c
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\jabber\util\inaddr.h(72): warning C4005: “SOCKET_ERROR”: 宏重定义
+                 c:\program files (x86)\windows kits\8.1\include\um\winsock2.h(392) : 参见“SOCKET_ERROR”的前一个定义
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\tool.h(7): warning C4005: “NULL”: 宏重定义
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(36) : 参见“NULL”的前一个定义
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\tools\win32_interop\win32_types_hiredis.h(44): warning C4142: 类型的良性重定义
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\moniclient_callback.c(92): warning C4101: “destsess”: 未引用的局部变量
+         正在生成代码...
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\mobox\projects\frontsvr\warnsvr_callback.c(344): warning C4715: “save_warning”: 不是所有的控件路径都返回值
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"../../bin/exe/backcard.exe" /INCREMENTAL:NO /NOLOGO util.lib mio.lib subst.lib libeay32.lib pthreads.lib hiredis.lib Win32_Interop.lib libmysql.lib kernel32.lib user32.lib gdi32.lib winspool.lib advapi32.lib shell32.lib uuid.lib WS2_32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /NODEFAULTLIB:LIBCMTD.lib /MANIFEST:NO /DEBUG /PDB:"../../bin/other/" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"../../bin/other/.lib" /MACHINE:X86 Debug\moniclient_callback.obj
+         Debug\moniclient_expat.obj
+         Debug\buffer.obj
+         Debug\client.obj
+         Debug\dbaccess.obj
+         Debug\devexpat.obj
+         Debug\expat.obj
+         Debug\getrefsvr.obj
+         Debug\json_string.obj
+         Debug\opensess_exp.obj
+         Debug\globaldata.obj
+         Debug\grouprslt.obj
+         Debug\cJSON.obj
+         Debug\main.obj
+         Debug\mysqldb.obj
+         Debug\p2p.obj
+         Debug\p2pclient.obj
+         Debug\protobuffer.obj
+         Debug\rediscommand.obj
+         Debug\responsepkt.obj
+         Debug\responser.obj
+         Debug\coms.obj
+         Debug\serialcom.obj
+         Debug\tool.obj
+         Debug\subject.obj
+         Debug\forward.obj
+         Debug\userstatus.obj
+         Debug\warnsvr_callback.obj
+         Debug\warnsvr_expat.obj
+     1>moniclient_callback.obj : warning LNK4075: 忽略“/EDITANDCONTINUE”(由于“/OPT:LBR”规范)
+            正在创建库 ../../bin/other/.lib 和对象 ../../bin/other/.exp
+     1>util.lib(config.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“util.lib(config.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>util.lib(hex.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“util.lib(hex.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>util.lib(inaddr.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“util.lib(inaddr.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>util.lib(jqueue.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“util.lib(jqueue.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>util.lib(jsignal.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“util.lib(jsignal.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>util.lib(log.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“util.lib(log.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>util.lib(nad.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“util.lib(nad.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>util.lib(pool.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“util.lib(pool.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>util.lib(str.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“util.lib(str.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>util.lib(xhash.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“util.lib(xhash.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>subst.lib(inet_aton.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“subst.lib(inet_aton.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>subst.lib(snprintf.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“subst.lib(snprintf.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>subst.lib(strndup.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“subst.lib(strndup.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>subst.lib(syslog.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“subst.lib(syslog.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>hiredis.lib(hiredis.obj) : warning LNK4099: 未找到 PDB“vc120.pdb”(使用“hiredis.lib(hiredis.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc120.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>hiredis.lib(net.obj) : warning LNK4099: 未找到 PDB“vc120.pdb”(使用“hiredis.lib(net.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc120.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>hiredis.lib(sds.obj) : warning LNK4099: 未找到 PDB“vc120.pdb”(使用“hiredis.lib(sds.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc120.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>Win32_Interop.lib(Win32_ANSI.obj) : warning LNK4099: 未找到 PDB“vc120.pdb”(使用“Win32_Interop.lib(Win32_ANSI.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc120.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>Win32_Interop.lib(Win32_Common.obj) : warning LNK4099: 未找到 PDB“vc120.pdb”(使用“Win32_Interop.lib(Win32_Common.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc120.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>Win32_Interop.lib(Win32_Error.obj) : warning LNK4099: 未找到 PDB“vc120.pdb”(使用“Win32_Interop.lib(Win32_Error.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc120.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>Win32_Interop.lib(Win32_EventLog.obj) : warning LNK4099: 未找到 PDB“vc120.pdb”(使用“Win32_Interop.lib(Win32_EventLog.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc120.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>Win32_Interop.lib(Win32_FDAPI.obj) : warning LNK4099: 未找到 PDB“vc120.pdb”(使用“Win32_Interop.lib(Win32_FDAPI.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc120.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>Win32_Interop.lib(Win32_fdapi_crt.obj) : warning LNK4099: 未找到 PDB“vc120.pdb”(使用“Win32_Interop.lib(Win32_fdapi_crt.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc120.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>Win32_Interop.lib(Win32_RedisLog.obj) : warning LNK4099: 未找到 PDB“vc120.pdb”(使用“Win32_Interop.lib(Win32_RedisLog.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc120.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>Win32_Interop.lib(win32_rfdmap.obj) : warning LNK4099: 未找到 PDB“vc120.pdb”(使用“Win32_Interop.lib(win32_rfdmap.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc120.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>Win32_Interop.lib(Win32_Time.obj) : warning LNK4099: 未找到 PDB“vc120.pdb”(使用“Win32_Interop.lib(Win32_Time.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc120.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>Win32_Interop.lib(Win32_variadicFunctor.obj) : warning LNK4099: 未找到 PDB“vc120.pdb”(使用“Win32_Interop.lib(Win32_variadicFunctor.obj)”或在“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\bin\other\vc120.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+         frontsvr.vcxproj -> D:\北京应急场馆\升级\前台自动退卡\工程\mobox\Projects\frontsvr\../../bin/exe/backcard.exe
+     1>已完成生成项目“D:\北京应急场馆\升级\前台自动退卡\工程\mobox\Projects\frontsvr\frontsvr.vcxproj”(Build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:01.79

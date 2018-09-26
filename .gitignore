@@ -1,0 +1,11 @@
+*.pdb
+*.exp
+*.ipch
+*.tlog
+*.ilk
+*.obj
+*.opt
+*.opensdf
+*.sdf
+jabber/
+Tools/

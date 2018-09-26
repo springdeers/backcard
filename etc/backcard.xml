@@ -1,0 +1,27 @@
+<?xml version="1.0" ?> 
+<appserver>
+<frontend>
+  <enable>true</enable>
+  <port>50002</port>
+</frontend>
+
+<backend>
+   <ip>0.0.0.0</ip>
+   <port>7120</port>
+</backend>
+
+<db>
+	<ip>127.0.0.1</ip>
+	<port>3306</port>
+	<user>root</user>
+	<pwd>Abcd123456</pwd>
+	<dbname>venue_db</dbname>
+</db>
+<coms>
+	<num>1</num>
+	<com1>
+		<baud>115200</baud>
+		<comno>1</comno>
+	</com1>
+</coms>
+</appserver>
