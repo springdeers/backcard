@@ -18,10 +18,15 @@
 	<dbname>venue_db</dbname>
 </db>
 <coms>
-	<num>1</num>
+	<num>2</num>
 	<com1>
 		<baud>115200</baud>
 		<comno>1</comno>
 	</com1>
+	
+	<com2>
+		<baud>115200</baud>
+		<comno>3</comno>
+	</com2>
 </coms>
 </appserver>

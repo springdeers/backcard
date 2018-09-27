@@ -1,7 +1,11 @@
-﻿生成启动时间为 9/26/2018 5:09:06 PM。
+﻿生成启动时间为 9/27/2018 10:07:57 AM。
      1>项目“D:\北京应急场馆\升级\前台自动退卡\工程\backcard\Projects\backcard\backcard.vcxproj”在节点 2 上(Build 个目标)。
      1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(388,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (frontsvr.vcxproj, smcacheserver.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-     1>Link:
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D HAVE_CONFIG_H /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:prompt my_curl\my_curl.c
+         my_curl.c
+     1>d:\北京应急场馆\升级\前台自动退卡\工程\backcard\projects\backcard\my_curl\my_curl.c(28): warning C4716: “req_reply”: 必须返回一个值
+       Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"../../bin/exe/backcard.exe" /INCREMENTAL:NO /NOLOGO util.lib mio.lib subst.lib libeay32.lib pthreads.lib hiredis.lib Win32_Interop.lib libmysql.lib kernel32.lib user32.lib gdi32.lib winspool.lib advapi32.lib shell32.lib uuid.lib WS2_32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /NODEFAULTLIB:LIBCMTD.lib /MANIFEST:NO /DEBUG /PDB:"../../bin/other/" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"../../bin/other/.lib" /MACHINE:X86 Debug\moniclient_callback.obj
          Debug\moniclient_expat.obj
          Debug\buffer.obj
@@ -11,6 +15,7 @@
          Debug\expat.obj
          Debug\getrefsvr.obj
          Debug\json_string.obj
+         Debug\my_curl.obj
          Debug\opensess_exp.obj
          Debug\globaldata.obj
          Debug\cJSON.obj
@@ -64,4 +69,4 @@
 
 生成成功。
 
-已用时间 00:00:00.35
+已用时间 00:00:00.82

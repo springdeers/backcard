@@ -14,6 +14,8 @@
 #include "json/cJSON.h"
 #include "forward.h"
 #include "scom/coms.h"
+#include "curl/curl.h"
+#include "my_curl/my_curl.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -349,33 +351,7 @@ int main(int argc, char **argv)
 		client()->log = log_new(log_STDOUT,NULL,NULL);
 	else if (client()->log_type == log_FILE)
 		client()->log = log_new(log_FILE, "../log/backcard.log", NULL);
-	//////////////////////////////////////////////////////////////////////////
-	// test code
-#if 0
-	xht test_ht = xhash_new(100);
-	{
-		char * taskid = NULL;
-		char * executor = NULL;
-		
 
-		taskid = "12";
-		executor = "007";
-		xhash_put(test_ht, taskid, executor);
-
-	}
-
-	char * exert = NULL;
-	exert = (char *)xhash_get(test_ht, "12");
-	printf("exert = %s.\n", exert);
-
-	/*xhash_put(test_ht, taskid, "008");
-	exert = (char *)xhash_get(test_ht, taskid);
-	printf("exert = %s.\n", exert);*/
-
-	while (1);
-
-#endif
-	//////////////////////////////////////////////////////////////////////////
 	client()->pktpool = response_pkt_pool_new();
 	client()->user_act = users_act_new(8192);
 
@@ -393,15 +369,12 @@ int main(int argc, char **argv)
 	client()->mio = mio_new(FD_SETSIZE);	
 	client()->enable_p2p = TRUE;
 
-	//db_query_config(client()->sqlobj, client()->plat_conf);
-	/*if (-1 == db_query_config(client()->sqlobj, &g_warntime) || g_warntime <= 0)
-	{
-		log_write(client()->log, LOG_NOTICE, "query rslt: g_warntime <= 0. manually set to 5 minutes", g_warntime);
-		g_warntime = 5 * 60;
-	}		
-	g_warntime *= 60;
-	log_write(client()->log, LOG_NOTICE, "g_warntime = %d.", g_warntime);
-*/
+	curl_global_init(CURL_GLOBAL_ALL);
+
+	char * url = "http://127.0.0.1:8687/user/score?cardid=304068&comid=101";
+	char * response = NULL;
+	curl_get_req(url, response);
+	
 	p2p_listener_start(client());
 
 	//Á¬½Óprintsvr
