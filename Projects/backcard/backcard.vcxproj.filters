@@ -39,6 +39,7 @@
     <ClCompile Include="json\cJSON.c">
       <Filter>json</Filter>
     </ClCompile>
+    <ClCompile Include="net.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="buffer.h" />
@@ -86,6 +87,7 @@
     <ClInclude Include="json\cJSON.h">
       <Filter>json</Filter>
     </ClInclude>
+    <ClInclude Include="net.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />

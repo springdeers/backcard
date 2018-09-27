@@ -1,4 +1,4 @@
-﻿生成启动时间为 9/27/2018 10:07:10 AM。
+﻿生成启动时间为 9/27/2018 11:04:02 AM。
      1>项目“D:\工作\北京场馆\5工程\backcard\backcard\Projects\backcard\backcard.vcxproj”在节点 2 上(Build 个目标)。
      1>Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"../../bin/exe/backcard.exe" /INCREMENTAL:NO /NOLOGO util.lib mio.lib subst.lib libeay32.lib pthreads.lib hiredis.lib Win32_Interop.lib libmysql.lib kernel32.lib user32.lib gdi32.lib winspool.lib advapi32.lib shell32.lib uuid.lib WS2_32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /NODEFAULTLIB:LIBCMTD.lib /MANIFEST:NO /DEBUG /PDB:"../../bin/other/" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"../../bin/other/.lib" /MACHINE:X86 Debug\moniclient_callback.obj
@@ -10,6 +10,7 @@
          Debug\expat.obj
          Debug\getrefsvr.obj
          Debug\json_string.obj
+         Debug\net.obj
          Debug\opensess_exp.obj
          Debug\globaldata.obj
          Debug\cJSON.obj
@@ -65,4 +66,4 @@
 
 生成成功。
 
-已用时间 00:00:00.56
+已用时间 00:00:00.47

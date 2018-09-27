@@ -11,11 +11,6 @@
 
 #include <time.h>
 
-//typedef struct _conf_st
-//{
-//	int warntime;			// 消失报警的阈值时间，单位是分钟
-//}conf_st, *conf_t;
-
 typedef enum {
 	stream_SESS  = 0x00,
 	mon_SESS     = 0x01,
@@ -31,180 +26,6 @@ typedef enum {
 	state_open_SESS = 0x02
 }sess_state_t;
 
-#define  WARN_NONE       (0)
-#define  WARN_AREA_ILL   (1<<0)
-#define  WARN_AGRE       (1<<1)
-#define  WARN_GROUP_SEPT (1<<2)
-#define  WARN_STRANGER   (1<<3)
-#define  WARN_AREA_NONE  (1<<4)
-#define  WARN_DISAPPEAR  (1<<5)
-#define  WARN_CACHEAREA  (1<<6)
-typedef struct _mytime_st 
-{
-	int year;
-	int month;
-	int day;
-	int hour;
-	int minute;
-	int second;
-}mytime_st,*mytime_t;
-
-typedef struct _weektime_st{
-	unsigned char weekmask;
-
-	int hour;
-	int minute;
-	int second;
-}weektime_st,*weektime_t;
-
-typedef struct _weektimesection_st 
-{
-	unsigned char weekmask;
-
-	int hourStart;
-	int minuteStart;
-	int secondStart;
-
-	int hourEnd;
-	int minuteEnd;
-	int secondEnd;
-}weektimesection_st,*weektimesection_t;
-
-void weektimesection_2str(weektimesection_t t,char* str);
-int  weektime_in(weektime_t t,weektimesection_t s);
-int  mytime_cmp_sub(mytime_t l,mytime_t r);
-
-
-typedef struct _fault_st{
-	char ip[16];
-	int  fcode;//error code
-}fault_st,*fault_t;
-
-typedef enum{
-	ePerson = 0,
-	eArea   = 1,
-	ePlan   = 2,
-	eRule   = 3,
-	eGroup  = 4,
-	eFixrule= 5,
-	eFormation =6,
-	eDBCTag = 7,
-	eDBCUnused = 100,
-}eDBC_obj;
-
-typedef  enum{
-	eADD = 0,
-	eDEL = 1,
-	eUPD = 2,
-}eDBC_operation;
-
-
-typedef struct _dbc_person_st
-{
-	eDBC_operation type;
-	int  pid;//person id.
-	int  gid;//group belong to.
-	int  oldgid;//obsolet group belonged to.
-}dbc_person_st,*dbc_person_t;
-
-typedef struct _dbc_area_st
-{
-	eDBC_operation type;
-	char areaid[64];
-	int  x;
-	int  y;
-	int  z;
-	int  cx;
-	int  cy;
-	int  alertable;
-	int  alertlevel;
-}dbc_area_st,*dbc_area_t;
-
-typedef struct _dbc_plan_st
-{
-	eDBC_operation type;
-	int  planid;
-}dbc_plan_st,*dbc_plan_t;
-
-typedef struct _dbc_rule_st
-{
-	eDBC_operation type;
-	int  personid;
-	char areacode[64];
-	mytime_st start;
-	mytime_st end;
-	int  planid;
-	int  grouprule;
-}dbc_rule_st,*dbc_rule_t;
-
-typedef struct _dbc_fixrule_st{
-	eDBC_operation type;
-	int   personid;
-	char areacode[64];
-	weektimesection_st section;
-	int   planid;
-	int   grouprule;
-}dbc_fixrule_st,*dbc_fixrule_t;
-
-typedef struct _dbc_formation_st{
-	eDBC_operation type;
-	int   personid;
-	int   groupid;
-}dbc_formation_st,*dbc_formation_t;
-
-typedef struct _dbc_group_st
-{
-	eDBC_operation type;
-	int groupid;
-	int leaderid;
-	int tempflag;
-	mytime_st starttime;
-	mytime_st endtime;
-}dbc_group_st,*dbc_group_t;
-
-typedef struct _dbc_info_st{
-	eDBC_obj otype;
-	int      dbctag;
-	union{
-		dbc_person_st person;
-		dbc_area_st   area;
-		dbc_plan_st   plan;
-		dbc_rule_st   rule;
-		dbc_group_st  group;
-		dbc_fixrule_st fixrule;
-		dbc_formation_st formation;		
-	};
-}dbc_info_st,*dbc_info_t;
-
-#define  USER_INFO_ID    (1001)
-typedef struct _vec_st{
-	int    cnt;
-	int    cap;
-	int    size;
-	char*  data;
-
-}*vec_t,vec_st;
-
-vec_t   vec_alloc(vec_t,int cnt,int size);
-int     vec_add  (vec_t,int id ,int x,int y,int z);
-void    vec_clear(vec_t);
-void    vec_free (vec_t);
-void*   vec_data (vec_t,int);
-
-typedef struct _warn_st{
-	int   personid;
-	BOOL  redlight;
-	BOOL  greenlight;
-	BOOL  vibration;
-	BOOL  beep;
-}warn_st,*warn_t;
-
-#define  WARN_INFO_ID    (1002)
-
-typedef struct _resp_header_st{
-	int type;
-	int len;
-}resp_header_st,*resp_header_t;
 
 typedef struct _serverattr_st{
 	char* db_driver;
@@ -241,15 +62,12 @@ struct _s_client{
 	int			        backend_port;
 	mio_fd_t			backend_fd;
 
-
 	//server port..
 	char			   *printsvr_ip;
 	int			        printsvr_port;
 	mio_fd_t			printsvr_fd;
 	void               *p2p_printsvr;
 
-
-	
 	void               *devmap;
 	subject_t          subjects;
 	//
@@ -288,7 +106,7 @@ struct _s_client{
 	xht					xdbconfig;
 	jqueue_t			sub_query_que;
 };
-typedef struct _s_client  *_s_client_p, *client_p;
+typedef struct _s_client  *_s_client_t, *client_t;
 
 typedef struct _sess_st {
 	sess_type_t  type;
@@ -297,7 +115,7 @@ typedef struct _sess_st {
 	char         role[64];
 	char         subject[64];
 	time_t       last_activity;
-	_s_client_p  client;
+	_s_client_t  client;
 	mio_fd_t	 fd;
 	int          state;
 	void*        param;  
@@ -317,23 +135,12 @@ void mhash_cache_clear(mhash_cache_t cache);
 
 typedef int (*pftmio_callback)(mio_t m, mio_action_t a, mio_fd_t fd, void *data, void *arg);
 void sess_free(sess_t sess);
-void client_free(client_p c);
-void client_push_pkt(client_p c,response_pkt_p pkt);
+void client_free(client_t c);
+void client_push_pkt(client_t c,response_pkt_p pkt);
 
-void mytime2str(mytime_t t,char* str);
-void str2mytime(char* str,mytime_t t);
-weektime_t myweektime(weektime_t wt);
-mytime_t  mylocaltime(mytime_t t);
-mytime_t localtime2mytime(struct tm* src,mytime_t dest);
-int str2hms(char* str,int* hour,int* minute,int* second);
-
-#define _DAYSECONDS(hour,minute,second) (hour*3600+minute*60+second)
-#define _SOW(day,hour,minute,second) (day*86400+hour*3600 + minute * 60 + second)
-
-_s_client_p client();
-_s_client_p getclient();
-
-int         client_init(client_p client, config_t cfg);
+_s_client_t client();
+_s_client_t getclient();
+int         client_init(client_t client, config_t cfg);
 
 #define _county_type (0)
 #define _town_type   (1)

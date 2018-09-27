@@ -99,6 +99,7 @@
     <ClInclude Include="expat\expat.h" />
     <ClInclude Include="getrefsvr.h" />
     <ClInclude Include="json_string.h" />
+    <ClInclude Include="net.h" />
     <ClInclude Include="opensess_exp.h" />
     <ClInclude Include="globaldata.h" />
     <ClInclude Include="hiredis.h" />
@@ -134,6 +135,7 @@
     <ClCompile Include="expat\expat.c" />
     <ClCompile Include="getrefsvr.c" />
     <ClCompile Include="json_string.c" />
+    <ClCompile Include="net.c" />
     <ClCompile Include="opensess_exp.c" />
     <ClCompile Include="globaldata.c" />
     <ClCompile Include="json\cJSON.c" />

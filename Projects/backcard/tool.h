@@ -68,13 +68,71 @@ typedef struct _ratecheck_st{
 }ratecheck_st,*ratecheck_t;
 
 ratecheck_t ratecheck_new(int total,int timeouts);
-BOOL ratecheck_add(ratecheck_t,int count);
-int  ratecheck_left(ratecheck_t);
-void ratecheck_reset(ratecheck_t);
-int  ratecheck_count(ratecheck_t);
+BOOL	ratecheck_add(ratecheck_t,int count);
+int		ratecheck_left(ratecheck_t);
+void	ratecheck_reset(ratecheck_t);
+int		ratecheck_count(ratecheck_t);
 
-int    s_atoi(const char* p);
-char*  s_strdup(const char* src);
-double s_atof(const char* str);
+int     s_atoi(const char* p);
+char*   s_strdup(const char* src);
+double  s_atof(const char* str);
+void    print_hex(unsigned char buffer[], int len);
+
+typedef struct _mytime_st
+{
+	int year;
+	int month;
+	int day;
+	int hour;
+	int minute;
+	int second;
+}mytime_st, *mytime_t;
+
+typedef struct _weektime_st{
+	unsigned char weekmask;
+	int hour;
+	int minute;
+	int second;
+}weektime_st, *weektime_t;
+
+typedef struct _weektimesection_st
+{
+	unsigned char weekmask;
+
+	int hourStart;
+	int minuteStart;
+	int secondStart;
+
+	int hourEnd;
+	int minuteEnd;
+	int secondEnd;
+}weektimesection_st, *weektimesection_t;
+
+void	   weektimesection_2str(weektimesection_t t, char* str);
+int		   weektime_in(weektime_t t, weektimesection_t s);
+int		   mytime_cmp_sub(mytime_t l, mytime_t r);
+void       mytime2str(mytime_t t, char* str);
+void       str2mytime(char* str, mytime_t t);
+weektime_t myweektime(weektime_t wt);
+mytime_t   mylocaltime(mytime_t t);
+mytime_t   localtime2mytime(struct tm* src, mytime_t dest);
+int        str2hms(char* str, int* hour, int* minute, int* second);
+
+#define _DAYSECONDS(hour,minute,second) (hour*3600+minute*60+second)
+#define _SOW(day,hour,minute,second) (day*86400+hour*3600 + minute * 60 + second)
+
+typedef struct _vec_st{
+	int    cnt;
+	int    cap;
+	int    size;
+	char*  data;
+}*vec_t, vec_st;
+
+vec_t   vec_alloc(vec_t, int cnt, int size);
+int     vec_add(vec_t, int id, int x, int y, int z);
+void    vec_clear(vec_t);
+void    vec_free(vec_t);
+void*   vec_data(vec_t, int);
+
 
 #endif
