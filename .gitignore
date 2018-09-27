@@ -9,8 +9,8 @@
 *.sdf
 jabber/
 Tools/
-/backcard.v12.suo
-/bin/other/.lib
+*.idb
+*.log
 /bin/exe/backcard.exe
 /Projects/backcard/Debug/backcard.log
 /Projects/backcard/Debug/vc120.idb

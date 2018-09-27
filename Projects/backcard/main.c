@@ -14,7 +14,7 @@
 #include "json/cJSON.h"
 #include "forward.h"
 #include "scom/coms.h"
-#include "curl/curl.h"
+#include "net.h"
 #include "my_curl/my_curl.h"
 
 #ifdef _DEBUG
@@ -46,103 +46,11 @@ static void _sensor_signal(int signum)
 	g_shutdown = 1;
 }
 
-static int init_database(_s_client_p client);
-
-static void _save_deadsession(int waits)
-{
-	int count = 0;
-	int i = 0;
-	time_t now = time(0);
-	static time_t last = 0;
-
-	if(last == 0) last = now;
-
-	if(now - last < waits) return ;
-
-	last = now;
-
-	count = jqueue_size(client()->dead_sess);
-
-	for(;i < count ;i++)
-	{
-		sess_t dead = (sess_t)jqueue_pull(client()->dead_sess);		
-		if (dead->type == stream_SESS){
-			p2pclient_t p2p = (p2pclient_t)dead;
-			
-			BOOL connected = p2pclient_connect(p2p, client()->mio, client()->dead_sess, client(), stream_SESS, NULL, client());
-			
-			if (connected){
-				init_sess_st initpara;
-				strcpy_s(initpara.from, sizeof(initpara.from) - 1, "backcard");
-				strcpy_s(initpara.to, sizeof(initpara.to) - 1, dead->sname);
-				p2pclient_init(p2p, &initpara);
-			}
-		}
-		else if (dead->type == back_server_SESS){
-			sess_free(dead);
-		}		
-	}
-}
-
-//Ping协议
-static void _pingsession(int waits)
-{
-	int i = 0;
-	int count = 0;
-	time_t now = time(0);
-	static time_t last = 0;
-	if(last == 0) last = now;
-
-	if(now - last < waits) return ;
-
-	last = now;
-
-	count = jqueue_size(client()->session_que);
-
-	for(;i<count;i++)
-	{
-		sess_t sess = (sess_t)jqueue_pull(client()->session_que);
-		jqueue_push(client()->session_que, sess, 0);
-
-		if(sess->binitsess == TRUE && sess->type == stream_SESS)
-		{
-			p2pclient_t  p2p  = (p2pclient_t)sess;			
-			protobuffer_send(p2p,eProto_ping,NULL);
-			log_write(client()->log, LOG_NOTICE, "--- ping %s. ---", sess->sname);
-		}
-	}
-}
-
-static int send2namend(char* name, char* buffer, int bufferlen)
-{
-	int rt = 0;
-	if (name == NULL || buffer == NULL) return 0;
-
-	sess_t sess = (sess_t)xhash_get(client()->sessions, name);
-	if (sess)
-	{
-		response_pkt_p pkt;
-		p2p_t p2p = (p2p_t)sess;
-
-		buffer[bufferlen + 1] = '\0';
-
-		pkt = response_pkt_new(client()->pktpool, bufferlen + 1);
-		memcpy(pkt->data, buffer, bufferlen + 1);
-		pkt->len = bufferlen + 1;
-
-		p2p_stream_push(p2p, pkt);
-		printf("send2named buffer = %s.\r\n", pkt->data);
-
-		rt = 1;
-	}
-
-	return rt;
-}
+static int init_database(_s_client_t client);
 
 static char * offline_jsonstring(user_status_t s)
 {
 	char  * rslt = NULL;
-	char    szvalue[64];
 	char    sztime[64];
 	cJSON * root = cJSON_CreateObject();
 
@@ -150,10 +58,7 @@ static char * offline_jsonstring(user_status_t s)
 	GetLocalTime(&T);
 	sprintf(sztime, "%04d-%02d-%02d %02d:%02d:%02d", T.wYear, T.wMonth, T.wDay, T.wHour, T.wMinute, T.wSecond);
 
-
-
 	cJSON_AddStringToObject(root, "taskid", s->key);
-
 
 	cJSON_AddStringToObject(root, "time", sztime);
 
@@ -182,28 +87,6 @@ static redisContext* redisinit()
 	printf("Connect to redisServer Success\n");
 }
 
-int s_atoi(const char* p){
-	if(p == NULL) 
-		return 0;
-	else 
-		return atoi(p);
-}
-
-char* s_strdup(const char* src){
-	if(src != NULL){
-		int strl = strlen(src);
-		char* p = (char*)malloc(strl+1);
-		strcpy_s(p,strl+1,src);
-		return p;
-	}
-
-	return NULL;
-}
-
-double s_atof(const char* str){
-	if(str == NULL) return 0;
-	return atof(str);
-}
 
 static int  mysqldb_que_ping(int waits)
 {
@@ -235,7 +118,7 @@ static int  mysqldb_que_ping(int waits)
 			// 如果mysql_ping失败，则尝试重连该分数据库
 			if (code)
 			{
-				towncode = (mysqlquery_t)xhash_get(client()->xsubquery2towncode, query);
+				towncode = xhash_get(client()->xsubquery2towncode, query);
 				dbconfig_t dbconfig = (dbconfig_t)xhash_get(client()->xdbconfig, towncode);
 
 				// 针对该towncode，查找对应分数据库连接属性，并尝试重建连接
@@ -270,61 +153,23 @@ static int  mysqldb_que_ping(int waits)
 	return code;
 }
 
-/*注释*/
-static void _app_config_expand(client_p client) 
-{
-
-	// frontend是业务接入端口，包含bd和inet两个链路
-	client->frontend_ip = s_strdup("0.0.0.0");
-	client->frontend_port = j_atoi(config_get_one(client->config, "frontend.port", 0), 0);
-	if (client->frontend_port == 0)
-		client->frontend_port = 7120;
-
-	// backend是向监控服务器开放的端口
-	client->backend_ip = s_strdup("0.0.0.0");
-	client->backend_port = j_atoi(config_get_one(client->config, "backend.port", 0), 0);
-	if (client->backend_port == 0)
-		client->backend_port = 7126;
-
-	// printsvr是认证与告警服务器
-	client->printsvr_ip = s_strdup(config_get_one(client->config, "printsvr.ip", 0));
-	if (client->printsvr_ip == NULL)
-		client->printsvr_ip = s_strdup("127.0.0.1");
-	client->printsvr_port = j_atoi(config_get_one(client->config, "printsvr.port", 0), 0);
-	if (client->printsvr_port == 0)
-		client->printsvr_port = 5433;
-
-	client->appattr.db_name = config_get_one(client->config, "db.name", 0);
-	client->appattr.db_ip = config_get_one(client->config, "db.ip", 0);
-	client->appattr.db_port = j_atoi(config_get_one(client->config, "db.port", 0), 0);
-	client->appattr.db_pwd = config_get_one(client->config, "db.pwd", 0);
-	client->appattr.db_user = config_get_one(client->config, "db.user", 0);
-
-	client->log_type = j_atoi(config_get_one(client->config, "log.type", 0), 0);	// 日志输出类型
-}
 
 #define DEFAULT_PATH "./"
 #define BD_USER_MAX		150
 #define ALL_USER_MAX	5000
 
-static void remove_zombie_from_lives();
-static void clear_zombies();
-static BOOL check_zombie(sess_t sess,time_t now);
-
-static void   clear_deads_from_lives();
-static void   check_dead_from_lives(sess_t sessdead);
-
-static void   check_inactive_client(int sec);
-
 static void   _mysql_querycallback(void* conn, int type, int code);
 static void   _mysql_ping(void* conn, int waits);
+
+
 int main(int argc, char **argv)
 {	
 	p2pclient_t  p2p = 0;
-	int   counter = 0;
-	char*           config_file  = NULL;
-	time_t          lastcheckperson = time(0);
-	jqueue_t        inactivequeue = jqueue_new();
+	int      counter = 0;
+	char*    config_file  = NULL;
+	time_t   lastcheckperson = time(0);
+	jqueue_t inactivequeue = jqueue_new();
+
 #ifdef HAVE_WINSOCK2_H
 	_MAC_WIN_WSA_START(0);
 #endif
@@ -334,6 +179,7 @@ int main(int argc, char **argv)
 #ifndef _WIN32
 	jabber_signal(SIGPIPE, SIG_IGN);
 #endif
+
 	set_debug_flag(0);
 
 	client()->config = config_new();
@@ -345,36 +191,16 @@ int main(int argc, char **argv)
 		return 2;
 	}
 
-	_app_config_expand(client());
-
-	if (client()->log_type == log_STDOUT)
-		client()->log = log_new(log_STDOUT,NULL,NULL);
-	else if (client()->log_type == log_FILE)
-		client()->log = log_new(log_FILE, "../log/backcard.log", NULL);
-
-	client()->pktpool = response_pkt_pool_new();
-	client()->user_act = users_act_new(8192);
+	client_init(client(),client()->config);
 
 	//init_database(client()); //连接数据库
-
-
-	//client()->plat_conf = (conf_t)malloc(sizeof(conf_st));
-	client()->stream_maxq = 1024;	
-	client()->sessions    = xhash_new(1023);
-	client()->session_que = jqueue_new();
-	client()->zombie_que  = jqueue_new();
-	client()->dead_sess   = jqueue_new();
-	client()->subjects = subject_new(512);
-
-	client()->mio = mio_new(FD_SETSIZE);	
-	client()->enable_p2p = TRUE;
 
 	curl_global_init(CURL_GLOBAL_ALL);
 
 	char * url = "http://127.0.0.1:8687/user/score?cardid=304068&comid=101";
 	char * response = NULL;
 	curl_get_req(url, response);
-	
+	}
 	p2p_listener_start(client());
 
 	//连接printsvr
@@ -405,14 +231,14 @@ int main(int argc, char **argv)
 
 		clear_deads_from_lives();
 
-		_save_deadsession(7);
+		save_deadsession(7);
 
 		if (now - last > 2){
 			remove_zombie_from_lives();
 			last = now;
 			clear_zombies();
 		}
-		_pingsession(2);
+		pingsession(2);
 		_mysql_ping(client()->sqlobj, 3);
 		//check_inactive_client(5);
 
@@ -422,139 +248,9 @@ int main(int argc, char **argv)
 
 	client_free(client());
 
-
 	return 0;
 }
 
-void   check_inactive_client(int sec)
-{
-	jqueue_t q = users_act_check(client()->user_act, sec);
-	if (q == NULL) return;
-
-	int cnt = jqueue_size(q);
-
-	for (int i = 0; i < cnt; i++){
-		user_status_t s = jqueue_pull(q);
-		
-		if (s == NULL) continue;
-		char buffer[1024] = { 0 };
-
-		SYSTEMTIME t;
-		GetLocalTime(&t);
-		char strtime[64] = { 0 };
-
-		sprintf_s(strtime, sizeof(strtime), "%04d-%02d-%02d %02d:%02d:%02d", t.wYear, t.wMonth, t.wDay, t.wHour, t.wMinute, t.wSecond);
-
-		sprintf_s(buffer, sizeof(buffer), "{\"taskid\":\"%s\",\"executor\":\"%s\",\"net\":\"inet\",\"data\":{\"time\":\"%s\",\"type\":\"disappear\"},\"loc\":{\"lon\":\"%s\",\"lat\":\"%s\",\"hgt\":\"%s\"}}", s->key, s->arg.executor, strtime, s->arg.lon, s->arg.lat, s->arg.hgt);
-		forward_to_monitor("warn",buffer);
-		
-		
-
-		log_write(client()->log, LOG_NOTICE, "-------______ taskid[%s] has just disappeared. ______-------", s->key);
-		
-		log_write(client()->log, LOG_NOTICE, "save_warning: %s", buffer);
-
-		
-		free(s);
-	}
-
-	jqueue_free(q);
-}
-
-
-
-
-void remove_zombie_from_lives()
-{	
-	int  i = 0;
-	int  count = jqueue_size(client()->session_que);
-	time_t now = time(0);
-
-	for(;i<count;i++)
-	{
-		sess_t sess = (sess_t)jqueue_pull(client()->session_que);
-
-		if(sess == NULL) continue;
-
-		if (check_zombie(sess, now))
-		{
-			if (sess->type == back_server_SESS)
-			{
-				//log_write(client()->log, LOG_NOTICE, "%s @%d is a zombie, I will kill our sess.", sess->sname, sess->fd->fd);
-				//p2p_kill((p2p_t)sess);
-				jqueue_push(client()->zombie_que,sess,0);
-			}
-				
-			else if (sess->type == stream_SESS)
-			{
-				//log_write(client()->log, LOG_NOTICE, "No response from %s, I will kill myself here and now...",sess->sname);
-				//p2pclient_close((p2pclient_t)sess);
-				jqueue_push(client()->zombie_que, sess, 0);
-			}
-				
-		}
-		else
-			jqueue_push(client()->session_que,sess,0);
-	}
-}
-
-void clear_zombies()
-{
-	int  i = 0;
-	int  count = jqueue_size(client()->zombie_que);
-
-	while (i++ < count)
-	{
-		sess_t sess = (sess_t)jqueue_pull(client()->zombie_que);
-
-		if (sess == NULL) continue;
-
-		if (sess->type == back_server_SESS)
-		{
-			log_write(client()->log, LOG_NOTICE, "%s @%d is a zombie, I will kill our sess.", sess->sname, sess->fd->fd);
-			p2p_kill((p2p_t)sess);
-		}else if (sess->type == stream_SESS)
-		{
-			log_write(client()->log, LOG_NOTICE, "No response from %s, I will kill myself here and now...", sess->sname);
-			p2pclient_close((p2pclient_t)sess);
-		}
-	}
-}
-
-void clear_deads_from_lives()
-{
-	int count = jqueue_size(client()->dead_sess);
-	int i = 0;
-
-	for(;i<count;i++){
-		sess_t sess = (sess_t)jqueue_pull(client()->dead_sess);
-		jqueue_push(client()->dead_sess,sess,0);
-		check_dead_from_lives(sess);
-	}
-}
-
-void check_dead_from_lives(sess_t sessdead)
-{
-	int i = 0;
-	int count = jqueue_size(client()->session_que);
-
-	for(;i < count ; i++){
-		void* p = jqueue_pull(client()->session_que);
-		if(sessdead == p) break;
-
-		jqueue_push(client()->session_que,p,0);
-	}
-}
-
-BOOL check_zombie(sess_t sess,time_t now){
-	BOOL rtn = FALSE;
-
-	if((now-sess->last_activity) > 20){		
-		rtn = TRUE;
-	}
-
-	return rtn;
-}
 
 static void _mysql_querycallback(void* conn, int type)
 {
@@ -581,7 +277,7 @@ static void _mysql_querycallback(void* conn, int type)
 	}
 }
 
-static int init_database(_s_client_p client)
+static int init_database(_s_client_t client)
 {
 	mysqlquery_t sqlobj = NULL;
 	sqlobj = mysqldb_connect_init(client->appattr.db_ip, client->appattr.db_port, client->appattr.db_user, client->appattr.db_pwd, client->appattr.db_name, _mysql_querycallback);

@@ -100,6 +100,7 @@
     <ClInclude Include="getrefsvr.h" />
     <ClInclude Include="json_string.h" />
     <ClInclude Include="my_curl\my_curl.h" />
+    <ClInclude Include="net.h" />
     <ClInclude Include="opensess_exp.h" />
     <ClInclude Include="globaldata.h" />
     <ClInclude Include="hiredis.h" />
@@ -136,6 +137,7 @@
     <ClCompile Include="getrefsvr.c" />
     <ClCompile Include="json_string.c" />
     <ClCompile Include="my_curl\my_curl.c" />
+    <ClCompile Include="net.c" />
     <ClCompile Include="opensess_exp.c" />
     <ClCompile Include="globaldata.c" />
     <ClCompile Include="json\cJSON.c" />
