@@ -1,6 +1,7 @@
 #include "client.h"
 #include "p2p.h"
 #include "p2pclient.h"
+#include "tool.h"
 
 static _s_client_p  _g_client = NULL;
 
@@ -239,6 +240,59 @@ void sess_free(sess_t sess) {
 	free(sess);
 }
 
+int  client_init(client_p client, config_t config)
+{
+	// frontend是业务接入端口，包含bd和inet两个链路
+	client->frontend_ip = s_strdup("0.0.0.0");
+	client->frontend_port = j_atoi(config_get_one(config, "frontend.port", 0), 0);
+	if (client->frontend_port == 0)
+		client->frontend_port = 7120;
+
+	// backend是向监控服务器开放的端口
+	client->backend_ip = s_strdup("0.0.0.0");
+	client->backend_port = j_atoi(config_get_one(config, "backend.port", 0), 0);
+	if (client->backend_port == 0)
+		client->backend_port = 7126;
+
+	// printsvr是认证与告警服务器
+	client->printsvr_ip = s_strdup(config_get_one(config, "printsvr.ip", 0));
+	if (client->printsvr_ip == NULL)
+		client->printsvr_ip = s_strdup("127.0.0.1");
+	client->printsvr_port = j_atoi(config_get_one(config, "printsvr.port", 0), 0);
+	if (client->printsvr_port == 0)
+		client->printsvr_port = 5433;
+
+	client->appattr.db_name = config_get_one(config, "db.name", 0);
+	client->appattr.db_ip = config_get_one(config, "db.ip", 0);
+	client->appattr.db_port = j_atoi(config_get_one(config, "db.port", 0), 0);
+	client->appattr.db_pwd = config_get_one(config, "db.pwd", 0);
+	client->appattr.db_user = config_get_one(config, "db.user", 0);
+
+	client->log_type = j_atoi(config_get_one(config, "log.type", 0), 0);	// 日志输出类型
+
+	if (client->log_type == log_STDOUT)
+		client->log = log_new(log_STDOUT, NULL, NULL);
+	else if (client->log_type == log_FILE)
+		client->log = log_new(log_FILE, "../log/backcard.log", NULL);
+
+	//////////////////////////////////////////////////////////////////////////
+	client->pktpool = response_pkt_pool_new();
+	client->user_act = users_act_new(8192);
+
+	//client()->plat_conf = (conf_t)malloc(sizeof(conf_st));
+	client->stream_maxq = 1024;
+	client->sessions = xhash_new(1023);
+	client->session_que = jqueue_new();
+	client->zombie_que = jqueue_new();
+	client->dead_sess = jqueue_new();
+	client->subjects = subject_new(512);
+
+	client->mio = mio_new(FD_SETSIZE);
+	client->enable_p2p = TRUE;
+
+	return 1;
+}
+
 void client_free(client_p c)
 {
 	if(c == NULL) return;
@@ -320,7 +374,7 @@ vec_t vec_alloc(vec_t p,int caporcnt,int size)
 	if(p == NULL)
 	{
 		while((rtn = (vec_t)malloc(sizeof(vec_st))) == NULL) sleep(10);
-		while(rtn->data = malloc(caporcnt * size) == NULL) sleep(10);
+		while(rtn->data = (char*)malloc(caporcnt * size) == NULL) sleep(10);
 		rtn->cap = caporcnt;
 		rtn->cnt = 0;
 		rtn->size = size;

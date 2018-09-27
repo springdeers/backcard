@@ -73,5 +73,8 @@ int  ratecheck_left(ratecheck_t);
 void ratecheck_reset(ratecheck_t);
 int  ratecheck_count(ratecheck_t);
 
+int    s_atoi(const char* p);
+char*  s_strdup(const char* src);
+double s_atof(const char* str);
 
 #endif

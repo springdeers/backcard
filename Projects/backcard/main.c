@@ -148,8 +148,6 @@ static char * offline_jsonstring(user_status_t s)
 	GetLocalTime(&T);
 	sprintf(sztime, "%04d-%02d-%02d %02d:%02d:%02d", T.wYear, T.wMonth, T.wDay, T.wHour, T.wMinute, T.wSecond);
 
-
-
 	cJSON_AddStringToObject(root, "taskid", s->key);
 
 
@@ -180,28 +178,6 @@ static redisContext* redisinit()
 	printf("Connect to redisServer Success\n");
 }
 
-int s_atoi(const char* p){
-	if(p == NULL) 
-		return 0;
-	else 
-		return atoi(p);
-}
-
-char* s_strdup(const char* src){
-	if(src != NULL){
-		int strl = strlen(src);
-		char* p = (char*)malloc(strl+1);
-		strcpy_s(p,strl+1,src);
-		return p;
-	}
-
-	return NULL;
-}
-
-double s_atof(const char* str){
-	if(str == NULL) return 0;
-	return atof(str);
-}
 
 static int  mysqldb_que_ping(int waits)
 {
@@ -233,7 +209,7 @@ static int  mysqldb_que_ping(int waits)
 			// 如果mysql_ping失败，则尝试重连该分数据库
 			if (code)
 			{
-				towncode = (mysqlquery_t)xhash_get(client()->xsubquery2towncode, query);
+				towncode = xhash_get(client()->xsubquery2towncode, query);
 				dbconfig_t dbconfig = (dbconfig_t)xhash_get(client()->xdbconfig, towncode);
 
 				// 针对该towncode，查找对应分数据库连接属性，并尝试重建连接
@@ -268,38 +244,6 @@ static int  mysqldb_que_ping(int waits)
 	return code;
 }
 
-/*注释*/
-static void _app_config_expand(client_p client) 
-{
-
-	// frontend是业务接入端口，包含bd和inet两个链路
-	client->frontend_ip = s_strdup("0.0.0.0");
-	client->frontend_port = j_atoi(config_get_one(client->config, "frontend.port", 0), 0);
-	if (client->frontend_port == 0)
-		client->frontend_port = 7120;
-
-	// backend是向监控服务器开放的端口
-	client->backend_ip = s_strdup("0.0.0.0");
-	client->backend_port = j_atoi(config_get_one(client->config, "backend.port", 0), 0);
-	if (client->backend_port == 0)
-		client->backend_port = 7126;
-
-	// printsvr是认证与告警服务器
-	client->printsvr_ip = s_strdup(config_get_one(client->config, "printsvr.ip", 0));
-	if (client->printsvr_ip == NULL)
-		client->printsvr_ip = s_strdup("127.0.0.1");
-	client->printsvr_port = j_atoi(config_get_one(client->config, "printsvr.port", 0), 0);
-	if (client->printsvr_port == 0)
-		client->printsvr_port = 5433;
-
-	client->appattr.db_name = config_get_one(client->config, "db.name", 0);
-	client->appattr.db_ip = config_get_one(client->config, "db.ip", 0);
-	client->appattr.db_port = j_atoi(config_get_one(client->config, "db.port", 0), 0);
-	client->appattr.db_pwd = config_get_one(client->config, "db.pwd", 0);
-	client->appattr.db_user = config_get_one(client->config, "db.user", 0);
-
-	client->log_type = j_atoi(config_get_one(client->config, "log.type", 0), 0);	// 日志输出类型
-}
 
 #define DEFAULT_PATH "./"
 #define BD_USER_MAX		150
@@ -316,13 +260,16 @@ static void   check_inactive_client(int sec);
 
 static void   _mysql_querycallback(void* conn, int type, int code);
 static void   _mysql_ping(void* conn, int waits);
+
+
 int main(int argc, char **argv)
 {	
 	p2pclient_t  p2p = 0;
-	int   counter = 0;
-	char*           config_file  = NULL;
-	time_t          lastcheckperson = time(0);
-	jqueue_t        inactivequeue = jqueue_new();
+	int      counter = 0;
+	char*    config_file  = NULL;
+	time_t   lastcheckperson = time(0);
+	jqueue_t inactivequeue = jqueue_new();
+
 #ifdef HAVE_WINSOCK2_H
 	_MAC_WIN_WSA_START(0);
 #endif
@@ -332,6 +279,7 @@ int main(int argc, char **argv)
 #ifndef _WIN32
 	jabber_signal(SIGPIPE, SIG_IGN);
 #endif
+
 	set_debug_flag(0);
 
 	client()->config = config_new();
@@ -343,62 +291,16 @@ int main(int argc, char **argv)
 		return 2;
 	}
 
-	_app_config_expand(client());
-
-	if (client()->log_type == log_STDOUT)
-		client()->log = log_new(log_STDOUT,NULL,NULL);
-	else if (client()->log_type == log_FILE)
-		client()->log = log_new(log_FILE, "../log/backcard.log", NULL);
-	//////////////////////////////////////////////////////////////////////////
-	// test code
-#if 0
-	xht test_ht = xhash_new(100);
-	{
-		char * taskid = NULL;
-		char * executor = NULL;
-		
-
-		taskid = "12";
-		executor = "007";
-		xhash_put(test_ht, taskid, executor);
-
-	}
-
-	char * exert = NULL;
-	exert = (char *)xhash_get(test_ht, "12");
-	printf("exert = %s.\n", exert);
-
-	/*xhash_put(test_ht, taskid, "008");
-	exert = (char *)xhash_get(test_ht, taskid);
-	printf("exert = %s.\n", exert);*/
-
-	while (1);
-
-#endif
-	//////////////////////////////////////////////////////////////////////////
-	client()->pktpool = response_pkt_pool_new();
-	client()->user_act = users_act_new(8192);
+	client_init(client(),client()->config);
 
 	//init_database(client()); //连接数据库
-
-
-	//client()->plat_conf = (conf_t)malloc(sizeof(conf_st));
-	client()->stream_maxq = 1024;	
-	client()->sessions    = xhash_new(1023);
-	client()->session_que = jqueue_new();
-	client()->zombie_que  = jqueue_new();
-	client()->dead_sess   = jqueue_new();
-	client()->subjects = subject_new(512);
-
-	client()->mio = mio_new(FD_SETSIZE);	
-	client()->enable_p2p = TRUE;
 
 	//db_query_config(client()->sqlobj, client()->plat_conf);
 	/*if (-1 == db_query_config(client()->sqlobj, &g_warntime) || g_warntime <= 0)
 	{
 		log_write(client()->log, LOG_NOTICE, "query rslt: g_warntime <= 0. manually set to 5 minutes", g_warntime);
 		g_warntime = 5 * 60;
-	}		
+	}
 	g_warntime *= 60;
 	log_write(client()->log, LOG_NOTICE, "g_warntime = %d.", g_warntime);
 */
@@ -448,7 +350,6 @@ int main(int argc, char **argv)
 	}
 
 	client_free(client());
-
 
 	return 0;
 }

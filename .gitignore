@@ -9,3 +9,5 @@
 *.sdf
 jabber/
 Tools/
+*.idb
+*.log

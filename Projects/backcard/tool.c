@@ -113,3 +113,26 @@ int  ratecheck_count(ratecheck_t ratechecker)
 {
 	return ratechecker->count;
 }
+
+int s_atoi(const char* p){
+	if (p == NULL)
+		return 0;
+	else
+		return atoi(p);
+}
+
+char* s_strdup(const char* src){
+	if (src != NULL){
+		int strl = strlen(src);
+		char* p = (char*)malloc(strl + 1);
+		strcpy_s(p, strl + 1, src);
+		return p;
+	}
+
+	return NULL;
+}
+
+double s_atof(const char* str){
+	if (str == NULL) return 0;
+	return atof(str);
+}

@@ -333,6 +333,8 @@ int str2hms(char* str,int* hour,int* minute,int* second);
 _s_client_p client();
 _s_client_p getclient();
 
+int         client_init(client_p client, config_t cfg);
+
 #define _county_type (0)
 #define _town_type   (1)
 
