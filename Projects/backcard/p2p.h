@@ -36,7 +36,7 @@ struct _p2p_st {
 typedef struct _p2p_st p2p_st, *p2p_t;
 
 int  p2p_stream_push(p2p_t p2p, response_pkt_p packet);
-void p2p_listener_start(_s_client_p client);
+void p2p_listener_start(_s_client_t client);
 void p2p_kill(p2p_t p2p);
 
 #endif

@@ -45,7 +45,7 @@ struct _responser_st {
 	responser_callback_t pop_data_fun;
 	void * pop_data_para;
 
-	client_p  client;
+	client_t  client;
 
 	char send_buff[64 * 1024];
 
@@ -67,7 +67,7 @@ struct _responser_st {
 typedef struct _responser_st		*responser_t;
 typedef struct _responser_st		responser_st;
 
-JABBERD2_API responser_t responser_new(config_t config, responser_callback_t data_cb, void *data_cb_para, client_p client, long cid) ;
+JABBERD2_API responser_t responser_new(config_t config, responser_callback_t data_cb, void *data_cb_para, client_t client, long cid) ;
 JABBERD2_API void responser_free(responser_t processor);
 
 void responser_write(responser_t processor, const char *data, int datal);

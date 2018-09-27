@@ -8,7 +8,7 @@
 extern int g_shutdown;
 static int _p2p_mio_callback(mio_t m, mio_action_t a, mio_fd_t fd, void *data, void *arg);
 
-void p2p_listener_start(_s_client_p client) 
+void p2p_listener_start(_s_client_t client) 
 {
 	client->frontend_fd = mio_listen(client->mio, client->frontend_port, client->frontend_ip, _p2p_mio_callback, (void *)client);
 	if(client->frontend_fd == NULL) {
@@ -254,7 +254,7 @@ static void _p2p_server_init(p2p_t p2p)
 static int _p2p_mio_callback(mio_t m, mio_action_t a, mio_fd_t fd, void *data, void *arg) 
 {
 	sess_t sess = (sess_t) arg;
-	_s_client_p client = (_s_client_p) arg;
+	_s_client_t client = (_s_client_t) arg;
 	p2p_t p2p = (p2p_t) arg;
 	sess_t quesess = NULL;
 	struct sockaddr_storage sa;

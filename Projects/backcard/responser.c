@@ -29,7 +29,7 @@ static int _responser_read_data(responser_t responser, char *buff, int buffl)
 	return len;
 }
 
-responser_t	responser_new(config_t config, responser_callback_t data_cb, void *data_cb_para, client_p client, long cid) 
+responser_t	responser_new(config_t config, responser_callback_t data_cb, void *data_cb_para, client_t client, long cid) 
 {
 	responser_t responser = NULL;
 	if(client == NULL) return NULL;

@@ -163,7 +163,7 @@ void forward_log_x_to_monitor(char *head, char *jstr)
 	if (item == NULL || item->valuestring == NULL)
 	{
 		cJSON_Delete(jsonroot);
-		return -1;
+		return ;
 	}
 	char *lon = item->valuestring;
 
@@ -171,7 +171,7 @@ void forward_log_x_to_monitor(char *head, char *jstr)
 	if (item == NULL || item->valuestring == NULL)
 	{
 		cJSON_Delete(jsonroot);
-		return -1;
+		return ;
 	}
 	char *lat = item->valuestring;
 
@@ -179,7 +179,7 @@ void forward_log_x_to_monitor(char *head, char *jstr)
 	if (item == NULL || item->valuestring == NULL)
 	{
 		cJSON_Delete(jsonroot);
-		return -1;
+		return ;
 	}
 	char *hgt = item->valuestring;
 
@@ -279,7 +279,7 @@ void forward_log_dyncode_to_monitor(char *jstr)
 	if (item == NULL || item->valuestring == NULL)
 	{
 		cJSON_Delete(jsonroot);
-		return -1;
+		return ;
 	}
 	char *lon = item->valuestring;
 
@@ -287,7 +287,7 @@ void forward_log_dyncode_to_monitor(char *jstr)
 	if (item == NULL || item->valuestring == NULL)
 	{
 		cJSON_Delete(jsonroot);
-		return -1;
+		return ;
 	}
 	char *lat = item->valuestring;
 
@@ -295,7 +295,7 @@ void forward_log_dyncode_to_monitor(char *jstr)
 	if (item == NULL || item->valuestring == NULL)
 	{
 		cJSON_Delete(jsonroot);
-		return -1;
+		return ;
 	}
 	char *hgt = item->valuestring;
 

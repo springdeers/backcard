@@ -45,7 +45,7 @@ void _p2pclient_release(p2pclient_t p2p)
 
 BOOL p2pclient_connect(p2pclient_t p,mio_t mio,jqueue_t deadsess,void* param,sess_type_t sesstype,io_complete_cb iccb,void* para)
 {
-	client_p client = (client_p)param;
+	client_t client = (client_t)param;
 
 	if(deadsess) p->deadsess = deadsess;
 	
@@ -365,7 +365,7 @@ int on_close_action(mio_fd_t fd,p2pclient_t p2p)
 int on_accept_action(mio_t m,mio_fd_t fd,void* data,void* arg)
 {	
 	p2pclient_t p2p = NULL;
-	_s_client_p client = (_s_client_p) arg;
+	_s_client_t client = (_s_client_t) arg;
 	struct sockaddr_storage sa;
 	int namelen = sizeof(sa), port, flags = 0;
 
