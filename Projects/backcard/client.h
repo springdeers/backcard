@@ -68,6 +68,10 @@ struct _s_client{
 	mio_fd_t			printsvr_fd;
 	void               *p2p_printsvr;
 
+	// http 
+	char				*parker_ip;
+	int					parker_port;
+
 	void               *devmap;
 	subject_t          subjects;
 	//

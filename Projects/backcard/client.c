@@ -63,6 +63,13 @@ int  client_init(client_t client, config_t config)
 	if (client->printsvr_port == 0)
 		client->printsvr_port = 5433;
 
+	client->parker_ip = s_strdup(config_get_one(config, "parker.ip", 0));
+	if (client->parker_ip == NULL)
+		client->parker_ip = s_strdup("127.0.0.1");
+	client->parker_port = j_atoi(config_get_one(config, "parker.port", 0),0);
+	if (client->parker_port == 0)
+		client->parker_port = 8687;
+
 	client->appattr.db_name = config_get_one(config, "db.name", 0);
 	client->appattr.db_ip = config_get_one(config, "db.ip", 0);
 	client->appattr.db_port = j_atoi(config_get_one(config, "db.port", 0), 0);

@@ -10,6 +10,7 @@
 #include "p2pclient.h"
 #include "forward.h"
 #include "getrefsvr.h"
+#include "my_curl/my_curl.h"
 
 
 //static sess_t getrefsvr(const char* cname)
@@ -32,125 +33,7 @@ static unsigned char checksum(unsigned char buffer[], int len)
 }
 
 
-static void save_x_log(char *type, char *jstr)
-{
-	p2p_t p2p;
-	sess_t destsess;
-
-
-	log_write(client()->log, LOG_NOTICE, "save_x_log1: %s:%s.", type, jstr);
-
-
-	cJSON *jsonroot, *json;
-	jsonroot = cJSON_Parse(jstr);
-	if (jsonroot == NULL)
-		return;
-	char *taskid, *executor, *net;
-
-	json = cJSON_GetObjectItem(jsonroot, "taskid");
-	if (json == NULL || json->valuestring == NULL) {
-		cJSON_Delete(jsonroot);
-		return;
-	}
-	taskid = json->valuestring;
-
-	log_write(client()->log, LOG_NOTICE, "save_x_log2.");
-	json = cJSON_GetObjectItem(jsonroot, "executor");
-	if (json == NULL || json->valuestring == NULL) {
-		cJSON_Delete(jsonroot);
-		return;
-	}
-	executor = json->valuestring;
-
-	log_write(client()->log, LOG_NOTICE, "save_x_log3.");
-	json = cJSON_GetObjectItem(jsonroot, "net");
-	if (json == NULL || json->valuestring == NULL) {
-		cJSON_Delete(jsonroot);
-		return;
-	}
-	net = json->valuestring;
-
-	log_write(client()->log, LOG_NOTICE, "save_x_log4.");
-
-	//////////////////////////////////////////////////////////////////////////
-	// 解析data
-	json = cJSON_GetObjectItem(jsonroot, "data");
-	if (json == NULL) {
-		cJSON_Delete(jsonroot);
-		return;
-	}
-
-	log_write(client()->log, LOG_NOTICE, "save_x_log5.");
-
-	cJSON* item = cJSON_GetObjectItem(json, "desc");
-	/*if (item == NULL || item->valuestring == NULL)
-	{
-		cJSON_Delete(jsonroot);
-		return;
-	}
-	char *desc = item->valuestring;
-*/
-	char *desc = "";
-	if (item != NULL && item->valuestring != NULL)
-	{
-		char *desc = item->valuestring;
-	}
-
-
-	log_write(client()->log, LOG_NOTICE, "save_x_log6.");
-	//////////////////////////////////////////////////////////////////////////
-	//解析loc
-	json = cJSON_GetObjectItem(jsonroot, "loc");
-	if (json == NULL) {
-		cJSON_Delete(jsonroot);
-		return;
-	}
-
-
-	log_write(client()->log, LOG_NOTICE, "save_x_log6.");
-
-	item = cJSON_GetObjectItem(json, "lon");
-	if (item == NULL || item->valuestring == NULL)
-	{
-		cJSON_Delete(jsonroot);
-		return;
-	}
-	char *lon = item->valuestring;
-
-	log_write(client()->log, LOG_NOTICE, "save_x_log7.");
-
-	item = cJSON_GetObjectItem(json, "lat");
-	if (item == NULL || item->valuestring == NULL)
-	{
-		cJSON_Delete(jsonroot);
-		return;
-	}
-	char *lat = item->valuestring;
-
-	log_write(client()->log, LOG_NOTICE, "save_x_log8.");
-
-	item = cJSON_GetObjectItem(json, "hgt");
-	if (item == NULL || item->valuestring == NULL)
-	{
-		cJSON_Delete(jsonroot);
-		return;
-	}
-	char *hgt = item->valuestring;
-
-	log_write(client()->log, LOG_NOTICE, "save_x_log9.");
-	SYSTEMTIME t;
-	GetLocalTime(&t);
-	char strtime[64] = { 0 };
-
-	sprintf_s(strtime, sizeof(strtime), "%04d-%02d-%02d %02d:%02d:%02d", t.wYear, t.wMonth, t.wDay, t.wHour, t.wMinute, t.wSecond);
-
-	log_write(client()->log, LOG_NOTICE, "save_x_log10.");
-	log_write(client()->log, LOG_NOTICE, "save_x_log: save [%s] log:%s\n", type, jstr);
-
-	cJSON_Delete(jsonroot);
-}
-
-static auth_hook(p2pclient_t p2pclient, char *jstr)
+static void auth_hook(p2pclient_t p2pclient, char *jstr)
 {
 	cJSON *jsonroot, *json;
 	jsonroot = cJSON_Parse(jstr);
@@ -215,6 +98,121 @@ static void initack_hook(sess_t sess,char *jstr)
 	protobuffer_send(client()->p2p_printsvr, eProto_auth, &authpara);
 }
 
+// 退卡请求返回数据的处理函数
+static size_t backcard_get_cb(void *ptr, size_t size, size_t nmemb, void *stream)
+{
+	// 收到的退卡请求结果，如果正常，则发送给moniclient
+	char jstr_moniclient[1024] = { 0 };
+	char jstr = (char *)ptr;
+	char *code, *cardid, *comid, *name, *error;
+
+	cJSON *jsonroot, *json;
+	jsonroot = cJSON_Parse(jstr);
+	if (jsonroot == NULL)
+	{
+		return -1;
+	}
+
+	json = cJSON_GetObjectItem(jsonroot, "cardid");
+	if (json == NULL || json->valuestring == NULL) {
+		cJSON_Delete(jsonroot);
+		return -1;
+	}
+	cardid = json->valuestring;
+
+	if (atoi(code) == 0)
+	{ 
+		// 发送 退卡成功 给监控客户端
+		memset(jstr_moniclient, 0, sizeof(jstr_moniclient));
+		sprintf(jstr_moniclient, "\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "backcardok", cardid, comid, name, "nil");
+		forward_to_moniclient("show", jstr_moniclient);
+		cJSON_Delete(jsonroot);
+		return 0;
+	}
+	else
+	{
+		// 发送 退卡失败 给监控客户端
+		memset(jstr_moniclient, 0, sizeof(jstr_moniclient));
+		sprintf(jstr_moniclient, "\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "backcarderr", cardid, comid, name, error);
+		forward_to_moniclient("show", jstr_moniclient);
+		cJSON_Delete(jsonroot);
+		return -1;
+	}
+}
+
+
+// 打印服务返回的数据处理函数
+static void printack_hook(char *jstr)
+{
+	char * rslt;
+	char jstr_moniclient[1024] = { 0 };
+	char *cardid, *comid, *name, *error;
+
+	// 解析jstr，查看rslt值
+	cJSON *jsonroot, *json;
+	jsonroot = cJSON_Parse(jstr);
+	if (jsonroot == NULL)
+	{
+		return -1;
+	}
+
+	json = cJSON_GetObjectItem(jsonroot, "cardid");
+	if (json == NULL || json->valuestring == NULL) {
+		cJSON_Delete(jsonroot);
+		return;
+	}
+	cardid = json->valuestring;
+
+	json = cJSON_GetObjectItem(jsonroot, "comid");
+	if (json == NULL || json->valuestring == NULL) {
+		cJSON_Delete(jsonroot);
+		return;
+	}
+	comid = json->valuestring;
+
+	json = cJSON_GetObjectItem(jsonroot, "name");
+	if (json == NULL || json->valuestring == NULL) {
+		cJSON_Delete(jsonroot);
+		return;
+	}
+	name = json->valuestring;
+
+	json = cJSON_GetObjectItem(jsonroot, "error");
+	if (json == NULL || json->valuestring == NULL) {
+		cJSON_Delete(jsonroot);
+		return;
+	}
+	error = json->valuestring;
+
+	if (strcmp(rslt, "ok") != 0)
+	{
+		// 发送 打印失败 给监控客户端
+		memset(jstr_moniclient, 0, sizeof(jstr_moniclient));
+		sprintf(jstr_moniclient, "\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "printerr", cardid, comid, name, error);
+		forward_to_moniclient("show", jstr_moniclient);		
+	}
+	else
+	{
+		// 发送 打印成功 给监控客户端
+		memset(jstr_moniclient, 0, sizeof(jstr_moniclient));
+		sprintf(jstr_moniclient, "\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "printok", cardid, comid, name, "nil");
+		forward_to_moniclient("show", jstr_moniclient);
+
+
+		// 向Parker发起退卡请求
+		char url[256] = { 0 };
+		sprintf(url, "http://%s:%d/user/score?cardid=%d&comid=%d", client()->parker_ip, client()->parker_port, cardid, comid);
+		curl_get_req(url, backcard_get_cb);
+
+		// 发送 正在退卡 给监控客户端
+		memset(jstr_moniclient, 0, sizeof(jstr_moniclient));
+		sprintf(jstr_moniclient, "\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "backcarding", cardid, comid, name, "nil");
+		forward_to_moniclient("show", jstr_moniclient);
+	}
+
+	cJSON_Delete(jsonroot);
+}
+
 void printsvr_exp_cb(int msgid, void* msg, int len, void* param)
 {
 	sess_t sess,destsess;
@@ -256,6 +254,14 @@ void printsvr_exp_cb(int msgid, void* msg, int len, void* param)
 		// 收到auth回复，如果ok则继续，否则主动断开连接
 		log_write(client()->log, LOG_NOTICE, "recv auth ack from %s .\n", sess->sname);	 //提示收到Initsession回复
 		auth_hook(p2pclient, jstr);
+	}
+	break;
+
+	case cunpack_printack:
+	{
+		// 收到printsvr回复，将状态发送给moniclient，如果ok则申请退卡
+		log_write(client()->log, LOG_NOTICE, "recv auth ack from %s .\n", sess->sname);	 //提示收到Initsession回复
+		printack_hook(jstr);
 	}
 	break;
 

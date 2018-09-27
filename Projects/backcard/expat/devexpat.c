@@ -63,9 +63,13 @@ void    dev_exp_free(dev_exp_t exp)
 		free(exp);
 }
 
+// 00 FF 09 D5 02 04 E8 40 C2 8F 49 80 FF 
+// 00 FF 06 D5 01 E0 0B F6 10 D9 
 //////////////////////////////////////////////////////////////////////////
 static int search_frame(dev_exp_t explain,uchar*p,int len,int* searchpos)
 {
+	return PACK_FINISHED;
+
 	int dwCurrPt = 0 ;
 	uchar ch;
 	_exp_t exp = &_BASE(explain);

@@ -2,6 +2,12 @@
 #include "client.h"
 #include "p2p.h"
 #include <time.h>
+#include "expat/devexpat.h"
+#include "my_curl/my_curl.h"
+#include "json/cJSON.h"
+#include "forward.h"
+
+
 
 /************************************************************************/
 /* create lxl 2018-09-26                                                */
@@ -10,18 +16,103 @@
 //private global ..
 static coms_t _coms = 0;
 
+// 查询分数请求返回数据的处理函数
+static size_t score_get_cb(void *ptr, size_t size, size_t nmemb, void *stream)
+{
+	// 收到的成绩结果，如果正常，则拼串发送给printsvr
+	char  jstr_moniclient[1024] = { 0 };
+	char  *jstr_printsvr = (char*)ptr;
+	printf("score_get_cb: \n%s\n", jstr_printsvr);
+
+	cJSON *jsonroot, *json;
+	char * code, *cardid, *comid, *name;
+	jsonroot = cJSON_Parse(jstr_printsvr);
+	if (jsonroot == NULL)
+	{
+		return -1;
+	}
+
+	json = cJSON_GetObjectItem(jsonroot, "cardid");
+	if (json == NULL || json->valuestring == NULL) {
+		cJSON_Delete(jsonroot);
+		return;
+	}
+	cardid = json->valuestring;
+
+	json = cJSON_GetObjectItem(jsonroot, "comid");
+	if (json == NULL || json->valuestring == NULL) {
+		cJSON_Delete(jsonroot);
+		return;
+	}
+	comid = json->valuestring;
+
+	json = cJSON_GetObjectItem(jsonroot, "name");
+	if (json == NULL || json->valuestring == NULL) {
+		cJSON_Delete(jsonroot);
+		return;
+	}
+	name = json->valuestring;
+
+	json = cJSON_GetObjectItem(jsonroot, "code");
+	if (json == NULL || json->valuestring == NULL) {
+		cJSON_Delete(jsonroot);
+		return;
+	}
+	code = json->valuestring;
+
+	if (atoi(code) == -1)
+	{
+		// 发送查询失败信息给监控客户端
+		memset(jstr_moniclient, 0, sizeof(jstr_moniclient));
+		sprintf(jstr_moniclient, "\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "queryfail", cardid, comid, name, "nil");
+		forward_to_moniclient("show", jstr_moniclient);
+		cJSON_Delete(jsonroot);
+		return -1;
+	}
+
+	// 发送 查询成功 给监控客户端
+	memset(jstr_moniclient, 0, sizeof(jstr_moniclient));
+	sprintf(jstr_moniclient, "\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "queryok", cardid, comid, name, "nil");
+	forward_to_moniclient("show", jstr_moniclient);
+
+	// 向printsvr发起打印请求
+	forward_to_printsvr("print", jstr_printsvr);
+
+	// 发送 正在打印成绩 给监控客户端
+	memset(jstr_moniclient, 0, sizeof(jstr_moniclient));
+	sprintf(jstr_moniclient, "\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "printing", cardid, comid, name, "nil");
+	forward_to_moniclient("show", jstr_moniclient);
+
+	cJSON_Delete(jsonroot);
+}
+
+
+
 //收到一消息时，调用此函数
 static void _on_com_message_cb(int msgid, void* msg, int len, void* param)
 {
 	com_t com = (com_t)param;
+	char url[1024];
+	char jstr_moniclient[1024] = { 0 };
+	char *cardid, *comid, *name;
 
-	int count = jqueue_size(client()->session_que);
-	for (int i = 0; i < count; i++)
-	{
-		sess_t sess = (sess_t)jqueue_pull(client()->session_que);
-		jqueue_push(client()->session_que, sess, 0);
-		protobuffer_send((p2p_t)sess, msgid, msg);
-	}
+	// test begin
+
+	cardid = "304068";
+	comid = "101";
+	name = cardid;
+
+	// test end
+
+
+	// 向Parker发送http请求，获取成绩
+	sprintf(url, "http://%s:%d/user/score?cardid=%s&comid=%s", client()->parker_ip,client()->parker_port,cardid,comid);
+	curl_get_req(url, score_get_cb);
+
+	// 发送 正在查询成绩 给监控客户端
+	memset(jstr_moniclient, 0, sizeof(jstr_moniclient));
+	sprintf(jstr_moniclient, "\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "querying", cardid, comid, name, "nil");
+	forward_to_moniclient("show", jstr_moniclient);
 }
 
 //收到串口原始数据时，调用此函数

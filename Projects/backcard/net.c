@@ -29,7 +29,6 @@ void   check_inactive_client(int sec)
 		sprintf_s(strtime, sizeof(strtime), "%04d-%02d-%02d %02d:%02d:%02d", t.wYear, t.wMonth, t.wDay, t.wHour, t.wMinute, t.wSecond);
 
 		sprintf_s(buffer, sizeof(buffer), "{\"taskid\":\"%s\",\"executor\":\"%s\",\"net\":\"inet\",\"data\":{\"time\":\"%s\",\"type\":\"disappear\"},\"loc\":{\"lon\":\"%s\",\"lat\":\"%s\",\"hgt\":\"%s\"}}", s->key, s->arg.executor, strtime, s->arg.lon, s->arg.lat, s->arg.hgt);
-		forward_to_monitor("warn", buffer);
 
 		log_write(client()->log, LOG_NOTICE, "-------______ taskid[%s] has just disappeared. ______-------", s->key);
 

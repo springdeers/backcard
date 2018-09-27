@@ -197,11 +197,9 @@ int main(int argc, char **argv)
 
 	curl_global_init(CURL_GLOBAL_ALL);
 
-	char * url = "http://127.0.0.1:8687/user/score?cardid=304068&comid=101";
-	char * response = NULL;
-	curl_get_req(url, response);
-	}
-	p2p_listener_start(client());
+	
+	
+	//p2p_listener_start(client());
 
 	//连接printsvr
 	//p2p = p2pclient_new(client()->printsvr_ip,client()->printsvr_port,stream_SESS); //tcp连接
@@ -239,11 +237,9 @@ int main(int argc, char **argv)
 			clear_zombies();
 		}
 		pingsession(2);
-		_mysql_ping(client()->sqlobj, 3);
-		//check_inactive_client(5);
+		//_mysql_ping(client()->sqlobj, 3);
 
 		do_coms_job(coms_get(),now);
-
 	}
 
 	client_free(client());

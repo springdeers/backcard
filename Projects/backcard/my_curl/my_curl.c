@@ -14,7 +14,6 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
 }
 
 
-
 // reply of the requery  
 size_t req_reply(void *ptr, size_t size, size_t nmemb, void *stream)
 {
@@ -28,7 +27,7 @@ size_t req_reply(void *ptr, size_t size, size_t nmemb, void *stream)
 }
 
 // http GET  
-CURLcode curl_get_req(char *url, char *response)
+CURLcode curl_get_req(char *url, write_data_cb_t write_data_cb)
 {
 	// init curl  
 	CURL *curl = curl_easy_init();
@@ -40,12 +39,12 @@ CURLcode curl_get_req(char *url, char *response)
 		curl_easy_setopt(curl, CURLOPT_URL, url); // url  
 		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false); // if want to use https  
 		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, false); // set peer and host verify false  
-		curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
-		curl_easy_setopt(curl, CURLOPT_READFUNCTION, NULL);
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, req_reply);
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&response);
+		curl_easy_setopt(curl, CURLOPT_VERBOSE, false);
+		//curl_easy_setopt(curl, CURLOPT_READFUNCTION, NULL);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data_cb);
+		//curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&response);
 		curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
-		curl_easy_setopt(curl, CURLOPT_HEADER, 1);
+		//curl_easy_setopt(curl, CURLOPT_HEADER, 1);
 		curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 3); // set transport and time out time  
 		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 3);
 		// start req  
@@ -86,5 +85,3 @@ CURLcode curl_post_req(const char *url, const char *postParams, char *response)
 	curl_easy_cleanup(curl);
 	return res;
 }
-
-
