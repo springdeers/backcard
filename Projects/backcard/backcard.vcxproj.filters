@@ -39,7 +39,9 @@
     <ClCompile Include="json\cJSON.c">
       <Filter>json</Filter>
     </ClCompile>
-    <ClCompile Include="net.c" />
+    <ClCompile Include="my_curl\my_curl.c">
+      <Filter>my_curl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="buffer.h" />
@@ -87,7 +89,9 @@
     <ClInclude Include="json\cJSON.h">
       <Filter>json</Filter>
     </ClInclude>
-    <ClInclude Include="net.h" />
+    <ClInclude Include="my_curl\my_curl.h">
+      <Filter>my_curl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -101,6 +105,9 @@
     </Filter>
     <Filter Include="json">
       <UniqueIdentifier>{6472838a-3994-4e10-9719-075a6ccbf233}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="my_curl">
+      <UniqueIdentifier>{01445c60-307a-4698-86ea-179f85eeb51d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

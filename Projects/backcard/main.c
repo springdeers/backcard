@@ -15,6 +15,7 @@
 #include "forward.h"
 #include "scom/coms.h"
 #include "net.h"
+#include "my_curl/my_curl.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -194,16 +195,11 @@ int main(int argc, char **argv)
 
 	//init_database(client()); //连接数据库
 
-	//db_query_config(client()->sqlobj, client()->plat_conf);
-	/*if (-1 == db_query_config(client()->sqlobj, &g_warntime) || g_warntime <= 0)
-	{
-		log_write(client()->log, LOG_NOTICE, "query rslt: g_warntime <= 0. manually set to 5 minutes", g_warntime);
-		g_warntime = 5 * 60;
-	}
-	g_warntime *= 60;
-	log_write(client()->log, LOG_NOTICE, "g_warntime = %d.", g_warntime);
-*/
-	p2p_listener_start(client());
+	curl_global_init(CURL_GLOBAL_ALL);
+
+	
+	
+	//p2p_listener_start(client());
 
 	//连接printsvr
 	//p2p = p2pclient_new(client()->printsvr_ip,client()->printsvr_port,stream_SESS); //tcp连接
@@ -241,11 +237,9 @@ int main(int argc, char **argv)
 			clear_zombies();
 		}
 		pingsession(2);
-		_mysql_ping(client()->sqlobj, 3);
-		//check_inactive_client(5);
+		//_mysql_ping(client()->sqlobj, 3);
 
 		do_coms_job(coms_get(),now);
-
 	}
 
 	client_free(client());

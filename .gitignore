@@ -11,3 +11,7 @@ jabber/
 Tools/
 *.idb
 *.log
+/bin/exe/backcard.exe
+/Projects/backcard/Debug/backcard.log
+/Projects/backcard/Debug/vc120.idb
+/bin/exe/libcurld.dll

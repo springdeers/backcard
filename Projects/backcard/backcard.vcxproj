@@ -42,8 +42,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>../../Tools/Win32_Interop/;../../mysql32/include;./;../../jabber/openssl/include;../../jabber;../../;$(IncludePath)</IncludePath>
-    <LibraryPath>../../mysql32/lib;../../lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>../../curl/include;../../Tools/Win32_Interop/;../../mysql32/include;./;../../jabber/openssl/include;../../jabber;../../;$(IncludePath)</IncludePath>
+    <LibraryPath>../../curl/lib;../../mysql32/lib;../../lib;$(LibraryPath)</LibraryPath>
     <OutDir>../../bin/exe/</OutDir>
     <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
@@ -99,6 +99,7 @@
     <ClInclude Include="expat\expat.h" />
     <ClInclude Include="getrefsvr.h" />
     <ClInclude Include="json_string.h" />
+    <ClInclude Include="my_curl\my_curl.h" />
     <ClInclude Include="net.h" />
     <ClInclude Include="opensess_exp.h" />
     <ClInclude Include="globaldata.h" />
@@ -135,6 +136,7 @@
     <ClCompile Include="expat\expat.c" />
     <ClCompile Include="getrefsvr.c" />
     <ClCompile Include="json_string.c" />
+    <ClCompile Include="my_curl\my_curl.c" />
     <ClCompile Include="net.c" />
     <ClCompile Include="opensess_exp.c" />
     <ClCompile Include="globaldata.c" />
