@@ -56,7 +56,7 @@ static void auth_hook(p2pclient_t p2pclient, char *jstr)
 		return;
 	}
 
-	log_write(client()->log, LOG_NOTICE, "recv auth ok from printsvr.");
+	log_write(client()->log, LOG_NOTICE, "recv authack ok from printsvr.");
 }
 
 static void initack_hook(sess_t sess,char *jstr)
@@ -103,8 +103,8 @@ static size_t backcard_get_cb(void *ptr, size_t size, size_t nmemb, void *stream
 {
 	// 收到的退卡请求结果，如果正常，则发送给moniclient
 	char jstr_moniclient[1024] = { 0 };
-	char jstr = (char *)ptr;
-	char *code, *cardid, *comid, *name, *error;
+	char *jstr = (char *)ptr;
+	char *rslt , *cardid, *comid, *name, *error;
 
 	cJSON *jsonroot, *json;
 	jsonroot = cJSON_Parse(jstr);
@@ -113,6 +113,13 @@ static size_t backcard_get_cb(void *ptr, size_t size, size_t nmemb, void *stream
 		return -1;
 	}
 
+	json = cJSON_GetObjectItem(jsonroot, "rslt");
+	if (json == NULL || json->valuestring == NULL) {
+		cJSON_Delete(jsonroot);
+		return -1;
+	}
+	rslt = json->valuestring;
+
 	json = cJSON_GetObjectItem(jsonroot, "cardid");
 	if (json == NULL || json->valuestring == NULL) {
 		cJSON_Delete(jsonroot);
@@ -120,7 +127,28 @@ static size_t backcard_get_cb(void *ptr, size_t size, size_t nmemb, void *stream
 	}
 	cardid = json->valuestring;
 
-	if (atoi(code) == 0)
+	json = cJSON_GetObjectItem(jsonroot, "comid");
+	if (json == NULL || json->valuestring == NULL) {
+		cJSON_Delete(jsonroot);
+		return -1;
+	}
+	comid = json->valuestring;
+
+	json = cJSON_GetObjectItem(jsonroot, "error");
+	if (json == NULL || json->valuestring == NULL) {
+		cJSON_Delete(jsonroot);
+		return -1;
+	}
+	error = json->valuestring;
+
+	json = cJSON_GetObjectItem(jsonroot, "name");
+	if (json == NULL || json->valuestring == NULL) {
+		cJSON_Delete(jsonroot);
+		return -1;
+	}
+	name = json->valuestring;
+
+	if (strcmp(rslt,"ok") == 0)
 	{ 
 		// 发送 退卡成功 给监控客户端
 		memset(jstr_moniclient, 0, sizeof(jstr_moniclient));
@@ -184,6 +212,13 @@ static void printack_hook(char *jstr)
 	}
 	error = json->valuestring;
 
+	json = cJSON_GetObjectItem(jsonroot, "rslt");
+	if (json == NULL || json->valuestring == NULL) {
+		cJSON_Delete(jsonroot);
+		return;
+	}
+	rslt = json->valuestring;
+
 	if (strcmp(rslt, "ok") != 0)
 	{
 		// 发送 打印失败 给监控客户端
@@ -201,7 +236,7 @@ static void printack_hook(char *jstr)
 
 		// 向Parker发起退卡请求
 		char url[256] = { 0 };
-		sprintf(url, "http://%s:%d/user/score?cardid=%d&comid=%d", client()->parker_ip, client()->parker_port, cardid, comid);
+		sprintf(url, "http://%s:%d/user/backcard?cardid=%s&comid=%s", client()->parker_ip, client()->parker_port, cardid, comid);
 		curl_get_req(url, backcard_get_cb);
 
 		// 发送 正在退卡 给监控客户端
@@ -239,20 +274,20 @@ void printsvr_exp_cb(int msgid, void* msg, int len, void* param)
 	case cunpack_initack:
 	{
 		// 收到来自printsvr的initack消息，如果内容为ok，则发送auth消息
-		log_write(client()->log, LOG_NOTICE, "recv initack from %s .\n", sess->sname);	 //提示收到Initsession回复
+		log_write(client()->log, LOG_NOTICE, "recv initack from %s: %s", "printsvr",frame);	 //提示收到Initsession回复
 		initack_hook(sess, jstr);
 	}
 
 	case cunpack_pong:
 	{
-		log_write(client()->log, LOG_NOTICE, "==== pong from printsvr. ====");
+		log_write(client()->log, LOG_NOTICE, "recv pong from printsvr.");
 	}
 	break;
 
-	case cunpack_auth:
+	case cunpack_authack:
 	{
 		// 收到auth回复，如果ok则继续，否则主动断开连接
-		log_write(client()->log, LOG_NOTICE, "recv auth ack from %s .\n", sess->sname);	 //提示收到Initsession回复
+		log_write(client()->log, LOG_NOTICE, "recv authack from %s :%s", sess->sname,frame);	 //提示收到Initsession回复
 		auth_hook(p2pclient, jstr);
 	}
 	break;
@@ -260,7 +295,7 @@ void printsvr_exp_cb(int msgid, void* msg, int len, void* param)
 	case cunpack_printack:
 	{
 		// 收到printsvr回复，将状态发送给moniclient，如果ok则申请退卡
-		log_write(client()->log, LOG_NOTICE, "recv auth ack from %s .\n", sess->sname);	 //提示收到Initsession回复
+		log_write(client()->log, LOG_NOTICE, "recv printack from %s: %s", sess->sname,frame);	 //提示收到Initsession回复
 		printack_hook(jstr);
 	}
 	break;

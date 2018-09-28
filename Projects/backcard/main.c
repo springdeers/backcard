@@ -202,20 +202,20 @@ int main(int argc, char **argv)
 	//p2p_listener_start(client());
 
 	//连接printsvr
-	//p2p = p2pclient_new(client()->printsvr_ip,client()->printsvr_port,stream_SESS); //tcp连接
-	//if(!p2pclient_connect(p2p,client()->mio,client()->dead_sess,client(),stream_SESS,NULL,client())){
-	//	printf("connect to  printsvr failed ,exit..\n");
-	//	client_free(client());
-	//	return 1;
-	//}else{
-	//	p2p->expat = printsvr_exp_new(&p2p->sess); //回调函数
-	//	exp_set_callback(p2p->expat, printsvr_exp_cb);
-	//	init_sess_st initpara;
-	//	strcpy_s(initpara.from, sizeof(initpara.from) - 1, "backcard");
-	//	strcpy_s(initpara.to, sizeof(initpara.to) - 1, "printsvr");
-	//	p2pclient_init(p2p, &initpara);
-	//}
-	//client()->p2p_printsvr = p2p;
+	p2p = p2pclient_new(client()->printsvr_ip,client()->printsvr_port,stream_SESS); //tcp连接
+	if(!p2pclient_connect(p2p,client()->mio,client()->dead_sess,client(),stream_SESS,NULL,client())){
+		printf("connect to  printsvr failed ,exit..\n");
+		client_free(client());
+		return 1;
+	}else{
+		p2p->expat = printsvr_exp_new(&p2p->sess); //回调函数
+		exp_set_callback(p2p->expat, printsvr_exp_cb);
+		init_sess_st initpara;
+		strcpy_s(initpara.from, sizeof(initpara.from) - 1, "backcard");
+		strcpy_s(initpara.to, sizeof(initpara.to) - 1, "printsvr");
+		p2pclient_init(p2p, &initpara);
+	}
+	client()->p2p_printsvr = p2p;
 
 	if (!coms_openinit(coms_get(), client()->config)) return -1;
 

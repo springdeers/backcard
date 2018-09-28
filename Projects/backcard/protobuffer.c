@@ -82,9 +82,9 @@ int protobuffer_send(p2pclient_t p2p,int msgid,void* pdata)
 			int endpos = 0;
 			response_pkt_p pkt;
 
-			/*count += sprintf_s(buffer+count,sizeof(buffer)-count,"$ping,{\"from\":\"%s\",\"to\":\"%s\"}","smcache","router");*/
+			count += sprintf_s(buffer+count,sizeof(buffer)-count,"$ping,{\"from\":\"%s\",\"to\":\"%s\"}","backcard",dest);
 			//count += sprintf_s(buffer + count, sizeof(buffer) - count, "$ping,{\"from\":\"%s\",\"to\":\"%s\"}", "backcard", dest);
-			count += sprintf_s(buffer + count, sizeof(buffer) - count, "$ping,%s,%s,{}", "backcard", dest);
+			/*count += sprintf_s(buffer + count, sizeof(buffer) - count, "$ping,%s,%s,{}", "backcard", dest);*/
 			count += sprintf_s(buffer+count,sizeof(buffer)-count,"*%02X\r\n",checksum(buffer,count));
 			endpos = count;
 			buffer[endpos+1] = '\0';
