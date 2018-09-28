@@ -210,11 +210,10 @@ int waitonreads(com_t com[], int comnum, unsigned int waitimeout_ms)
 		}
 	}
 	if (num == 0) return res;
-
+	
+	DWORD rslt = WaitForMultipleObjects(num, events, FALSE, waitimeout_ms);
+	switch (rslt)
 	{
-		DWORD rslt = WaitForMultipleObjects(num, events, FALSE, waitimeout_ms);
-		switch (rslt)
-		{
 		case WAIT_TIMEOUT:  break;
 		case WAIT_FAILED :  break;
 		case WAIT_ABANDONED:break;
@@ -234,7 +233,6 @@ int waitonreads(com_t com[], int comnum, unsigned int waitimeout_ms)
 				
 				evtcom->sess.ifreadwating = FALSE;
 			}
-		}
 			break;
 		}
 	}
