@@ -106,7 +106,7 @@ void client_free(client_t c)
 	if(c == NULL) return;
 
 	if (c->log)
-	log_write(c->log, LOG_NOTICE, "server shutting down");
+		log_write(c->log, LOG_NOTICE, "server shutting down");
 
 	/* cleanup dead sess */
 	if(c->dead_sess){
@@ -126,7 +126,6 @@ void client_free(client_t c)
 
 	if (c->printsvr_ip)
 		free(c->printsvr_ip);
-
 
 	/*if (c->subjects)
 		subject_free(c->subjects);*/

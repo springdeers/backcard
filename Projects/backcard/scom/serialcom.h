@@ -7,11 +7,10 @@ struct OVERLAPPED;
 extern "C"{
 #endif
 	enum{ eCode_ok,eCode_err };
+	enum { eState_new, eState_open, eState_init }; //for comsess_st.state
 
 	typedef int(*onreadcb_t)(unsigned char* rbuffer, int rlen, int code,void* param);
 	typedef onreadcb_t onwritecb_t;
-
-	enum { eState_new, eState_open, eState_init }; //for comsess_st.state
 
 	typedef struct _comsess_st{
 		OVERLAPPED osreader;
