@@ -1,9 +1,14 @@
 <?xml version="1.0" ?> 
-<appserver>
+<backcard>
 <frontend>
   <enable>true</enable>
   <port>50002</port>
 </frontend>
+
+<printsvr>
+  <ip>10.55.206.27</ip>
+  <port>7126</port>
+</printsvr>
 
 <backend>
    <ip>0.0.0.0</ip>
@@ -29,4 +34,4 @@
 		<comno>3</comno>
 	</com2>
 </coms>
-</appserver>
+</backcard>
