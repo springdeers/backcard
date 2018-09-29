@@ -64,7 +64,7 @@ static size_t score_get_cb(void *ptr, size_t size, size_t nmemb, void *stream)
 	{
 		// 发送查询失败信息给监控客户端
 		memset(jstr_moniclient, 0, sizeof(jstr_moniclient));
-		sprintf(jstr_moniclient, "\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "queryfail", cardid, comid, name, "nil");
+		sprintf(jstr_moniclient, "{\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "queryfail", cardid, comid, name, "nil");
 		forward_to_moniclient("show", jstr_moniclient);
 		cJSON_Delete(jsonroot);
 		return -1;
@@ -72,7 +72,7 @@ static size_t score_get_cb(void *ptr, size_t size, size_t nmemb, void *stream)
 
 	// 发送 查询成功 给监控客户端
 	memset(jstr_moniclient, 0, sizeof(jstr_moniclient));
-	sprintf(jstr_moniclient, "\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "queryok", cardid, comid, name, "nil");
+	sprintf(jstr_moniclient, "{\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "queryok", cardid, comid, name, "nil");
 	forward_to_moniclient("show", jstr_moniclient);
 
 	// 向printsvr发起打印请求
@@ -80,7 +80,7 @@ static size_t score_get_cb(void *ptr, size_t size, size_t nmemb, void *stream)
 
 	// 发送 正在打印成绩 给监控客户端
 	memset(jstr_moniclient, 0, sizeof(jstr_moniclient));
-	sprintf(jstr_moniclient, "\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "printing", cardid, comid, name, "nil");
+	sprintf(jstr_moniclient, "{\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "printing", cardid, comid, name, "nil");
 	forward_to_moniclient("show", jstr_moniclient);
 
 	cJSON_Delete(jsonroot);
@@ -111,7 +111,7 @@ static void _on_com_message_cb(int msgid, void* msg, int len, void* param)
 
 	// 发送 正在查询成绩 给监控客户端
 	memset(jstr_moniclient, 0, sizeof(jstr_moniclient));
-	sprintf(jstr_moniclient, "\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "querying", cardid, comid, name, "nil");
+	sprintf(jstr_moniclient, "{\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "querying", cardid, comid, name, "nil");
 	forward_to_moniclient("show", jstr_moniclient);
 }
 

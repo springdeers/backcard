@@ -152,7 +152,7 @@ static size_t backcard_get_cb(void *ptr, size_t size, size_t nmemb, void *stream
 	{ 
 		// 发送 退卡成功 给监控客户端
 		memset(jstr_moniclient, 0, sizeof(jstr_moniclient));
-		sprintf(jstr_moniclient, "\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "backcardok", cardid, comid, name, "nil");
+		sprintf(jstr_moniclient, "{\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "backcardok", cardid, comid, name, "nil");
 		forward_to_moniclient("show", jstr_moniclient);
 		cJSON_Delete(jsonroot);
 		return 0;
@@ -161,7 +161,7 @@ static size_t backcard_get_cb(void *ptr, size_t size, size_t nmemb, void *stream
 	{
 		// 发送 退卡失败 给监控客户端
 		memset(jstr_moniclient, 0, sizeof(jstr_moniclient));
-		sprintf(jstr_moniclient, "\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "backcarderr", cardid, comid, name, error);
+		sprintf(jstr_moniclient, "{\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "backcarderr", cardid, comid, name, error);
 		forward_to_moniclient("show", jstr_moniclient);
 		cJSON_Delete(jsonroot);
 		return -1;
@@ -223,14 +223,14 @@ static void printack_hook(char *jstr)
 	{
 		// 发送 打印失败 给监控客户端
 		memset(jstr_moniclient, 0, sizeof(jstr_moniclient));
-		sprintf(jstr_moniclient, "\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "printerr", cardid, comid, name, error);
+		sprintf(jstr_moniclient, "{\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "printerr", cardid, comid, name, error);
 		forward_to_moniclient("show", jstr_moniclient);		
 	}
 	else
 	{
 		// 发送 打印成功 给监控客户端
 		memset(jstr_moniclient, 0, sizeof(jstr_moniclient));
-		sprintf(jstr_moniclient, "\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "printok", cardid, comid, name, "nil");
+		sprintf(jstr_moniclient, "{\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "printok", cardid, comid, name, "nil");
 		forward_to_moniclient("show", jstr_moniclient);
 
 
@@ -241,7 +241,7 @@ static void printack_hook(char *jstr)
 
 		// 发送 正在退卡 给监控客户端
 		memset(jstr_moniclient, 0, sizeof(jstr_moniclient));
-		sprintf(jstr_moniclient, "\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "backcarding", cardid, comid, name, "nil");
+		sprintf(jstr_moniclient, "{\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "backcarding", cardid, comid, name, "nil");
 		forward_to_moniclient("show", jstr_moniclient);
 	}
 
