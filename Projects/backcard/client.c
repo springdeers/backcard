@@ -53,7 +53,7 @@ int  client_init(client_t client, config_t config)
 	client->backend_ip = s_strdup("0.0.0.0");
 	client->backend_port = j_atoi(config_get_one(config, "backend.port", 0), 0);
 	if (client->backend_port == 0)
-		client->backend_port = 7126;
+		client->backend_port = 7120;
 
 	// printsvr是认证与告警服务器
 	client->printsvr_ip = s_strdup(config_get_one(config, "printsvr.ip", 0));
@@ -61,7 +61,7 @@ int  client_init(client_t client, config_t config)
 		client->printsvr_ip = s_strdup("127.0.0.1");
 	client->printsvr_port = j_atoi(config_get_one(config, "printsvr.port", 0), 0);
 	if (client->printsvr_port == 0)
-		client->printsvr_port = 5433;
+		client->printsvr_port = 7126;
 
 	client->parker_ip = s_strdup(config_get_one(config, "parker.ip", 0));
 	if (client->parker_ip == NULL)
