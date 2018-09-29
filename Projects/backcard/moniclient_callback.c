@@ -70,7 +70,7 @@ static void auth_hook(char* jstr,sess_t sess)
 	p2p_t p2p = (p2p_t)sess;
 	response_pkt_p pkt = NULL;
 	unsigned char ucheck;
-	cnt += sprintf_s(buffer + cnt, sizeof(buffer) - cnt, "$auth,%s,%s{\"rslt\":\"ok\",\"seqno\":\"%s\"}", "backcard", sess->sname, seqno);
+	cnt += sprintf_s(buffer + cnt, sizeof(buffer) - cnt, "$authack,%s,%s{\"rslt\":\"ok\",\"seqno\":\"%s\"}", "backcard", sess->sname, seqno);
 	ucheck = checksum((unsigned char*)buffer, cnt);
 	cnt += sprintf_s(buffer + cnt, sizeof(buffer) - cnt, "*%02X\r\n", ucheck);
 	pkt = response_pkt_new(client()->pktpool, cnt);
