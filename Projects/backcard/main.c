@@ -199,7 +199,7 @@ int main(int argc, char **argv)
 
 	
 	
-	//p2p_listener_start(client());
+	p2p_listener_start(client());
 
 	//连接printsvr
 	p2p = p2pclient_new(client()->printsvr_ip,client()->printsvr_port,stream_SESS); //tcp连接
