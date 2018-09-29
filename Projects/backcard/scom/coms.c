@@ -94,25 +94,40 @@ static void _on_com_message_cb(int msgid, void* msg, int len, void* param)
 	com_t com = (com_t)param;
 	char url[1024];
 	char jstr_moniclient[1024] = { 0 };
-	char *cardid, *comid, *name;
+	char *comid, *name;
 
 	// test begin
 
-	cardid = "304068";
+	static int i = -1;
+	int cid = 304068 + i++;
+	if (i > 15)
+		i = 0;
+	char cardid[10] = { 0 };
+	//_itoa(cid, cardid, 10);
+	//_itoa_s(cid,cardid,)
+	_itoa(cid, cardid, 10);
+	//cardid = "304068";
 	comid = "101";
 	name = cardid;
 
+	if (strcmp(cardid, "304068") != 0)
+	{
+		printf("cardid is not 304068, return ....\n");
+		return;
+	}
+
 	// test end
-
-
-	// 向Parker发送http请求，获取成绩
-	sprintf(url, "http://%s:%d/user/score?cardid=%s&comid=%s", client()->parker_ip,client()->parker_port,cardid,comid);
-	curl_get_req(url, score_get_cb);
 
 	// 发送 正在查询成绩 给监控客户端
 	memset(jstr_moniclient, 0, sizeof(jstr_moniclient));
 	sprintf(jstr_moniclient, "{\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "querying", cardid, comid, name, "nil");
 	forward_to_moniclient("show", jstr_moniclient);
+
+	// 向Parker发送http请求，获取成绩
+	sprintf(url, "http://%s:%d/user/score?cardid=%s&comid=%s", client()->parker_ip,client()->parker_port,cardid,comid);
+	log_write(client()->log, LOG_NOTICE, "http [userscore] curl_get_req sent ....\n %s", url);
+	curl_get_req(url, score_get_cb);
+	
 }
 
 //收到串口原始数据时，调用此函数

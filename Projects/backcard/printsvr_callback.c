@@ -233,16 +233,16 @@ static void printack_hook(char *jstr)
 		sprintf(jstr_moniclient, "{\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "printok", cardid, comid, name, "nil");
 		forward_to_moniclient("show", jstr_moniclient);
 
-
-		// 向Parker发起退卡请求
-		char url[256] = { 0 };
-		sprintf(url, "http://%s:%d/user/backcard?cardid=%s&comid=%s", client()->parker_ip, client()->parker_port, cardid, comid);
-		curl_get_req(url, backcard_get_cb);
-
 		// 发送 正在退卡 给监控客户端
 		memset(jstr_moniclient, 0, sizeof(jstr_moniclient));
 		sprintf(jstr_moniclient, "{\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "backcarding", cardid, comid, name, "nil");
 		forward_to_moniclient("show", jstr_moniclient);
+
+		// 向Parker发起退卡请求
+		char url[256] = { 0 };
+		sprintf(url, "http://%s:%d/user/backcard?cardid=%s&comid=%s", client()->parker_ip, client()->parker_port, cardid, comid);
+		log_write(client()->log, LOG_NOTICE, "http [backcard] curl_get_req sent ....\n %s", url);
+		curl_get_req(url, backcard_get_cb);
 	}
 
 	cJSON_Delete(jsonroot);
