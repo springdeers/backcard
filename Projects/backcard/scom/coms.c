@@ -94,37 +94,48 @@ static void _on_com_message_cb(int msgid, void* msg, int len, void* param)
 	com_t com = (com_t)param;
 	char url[1024];
 	char jstr_moniclient[1024] = { 0 };
-	char *comid, *name;
+	char *name;
+	int comid = com->comno;
 
+	unsigned char * frame = (unsigned char*)msg;
+	//int cardid = frame[5] * 16 * 16 + frame[6] * 16 + frame[7];
+
+	unsigned int cardid = 0;
+	cardid = frame[5];
+	cardid <<= 8;
+	cardid |= frame[6];
+	cardid <<= 8;
+	cardid |= frame[7];
+	
 	// test begin
 
-	static int i = -1;
-	int cid = 304068 + i++;
-	if (i > 15)
-		i = 0;
-	char cardid[10] = { 0 };
+	//static int i = -1;
+	//int cid = 304068 + i++;
+	//if (i > 15)
+	//	i = 0;
+	//char cardid[10] = { 0 };
+	////_itoa(cid, cardid, 10);
+	////_itoa_s(cid,cardid,)
 	//_itoa(cid, cardid, 10);
-	//_itoa_s(cid,cardid,)
-	_itoa(cid, cardid, 10);
-	//cardid = "304068";
-	comid = "101";
-	name = cardid;
+	////cardid = "304068";
+	//comid = "101";
+	//name = cardid;
 
-	if (strcmp(cardid, "304068") != 0)
-	{
-		printf("cardid is not 304068, return ....\n");
-		return;
-	}
+	//if (strcmp(cardid, "304068") != 0)
+	//{
+	//	printf("cardid is not 304068, return ....\n");
+	//	return;
+	//}
 
 	// test end
 
 	// 发送 正在查询成绩 给监控客户端
 	memset(jstr_moniclient, 0, sizeof(jstr_moniclient));
-	sprintf(jstr_moniclient, "{\"stage\":\"%s\",\"cardid\":\"%s\",\"comid\":\"%s\",\"name\":\"%s\",\"param\":\"%s\"}", "querying", cardid, comid, name, "nil");
+	sprintf(jstr_moniclient, "{\"stage\":\"%s\",\"cardid\":\"%d\",\"comid\":\"%d\",\"name\":\"%s\",\"param\":\"%s\"}", "querying", cardid, comid, "NOBODY", "nil");
 	forward_to_moniclient("show", jstr_moniclient);
 
 	// 向Parker发送http请求，获取成绩
-	sprintf(url, "http://%s:%d/user/score?cardid=%s&comid=%s", client()->parker_ip,client()->parker_port,cardid,comid);
+	sprintf(url, "http://%s:%d/user/score?cardid=%d&comid=%d", client()->parker_ip,client()->parker_port,cardid,comid);
 	log_write(client()->log, LOG_NOTICE, "http [userscore] curl_get_req sent ....\n %s", url);
 	curl_get_req(url, score_get_cb);
 	

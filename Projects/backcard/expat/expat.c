@@ -22,12 +22,12 @@ void  exp_process_data(_exp_t exp,char* data,int len)
 	do{
 		int status;
 
-		if (strcmp(str, "") == 0)
+		/*if (strcmp(str, "") == 0)
 		{
 			str = str + 1;
 			remain_len = remain_len - 1;
 			continue;
-		}
+		}*/
 
 		status = exp->search(exp,str,remain_len,&curr_pos);		
 

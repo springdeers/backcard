@@ -65,11 +65,19 @@ void    dev_exp_free(dev_exp_t exp)
 
 // 00 FF 09 D5 02 04 E8 40 C2 8F 49 80 FF 
 // 00 FF 06 D5 01 E0 0B F6 10 D9 
+// 00 FF 09 D5 02 04 60 C1 12 EC 4C 81 41
+
+// 00 FF 09 D5 02 04 60 C1 12 EC 4C 81 41
+// 其中,04 60 C1是卡号,共13个字节
+// frame[0]-[3]是帧头,frame[4]-frame[end是帧体
+// frame[0] = 00;
+// frame[1] = FF;
+// frame[2] = 9 代表数据帧体长度
+// frame[3] = D5		// 帧头固定构成
+// frame[5]-[7] = cardid;
 //////////////////////////////////////////////////////////////////////////
 static int search_frame(dev_exp_t explain,uchar*p,int len,int* searchpos)
 {
-	return PACK_FINISHED;
-
 	int dwCurrPt = 0 ;
 	uchar ch;
 	_exp_t exp = &_BASE(explain);
@@ -137,13 +145,12 @@ static int search_frame(dev_exp_t explain,uchar*p,int len,int* searchpos)
 					}
 					else
 					{
-						explain->indlen = (unsigned int)(exp->frame[2]);
-						explain->indlen += 4;
+						explain->indlen = (unsigned int)(exp->frame[2]);	// 帧体长度
+						explain->indlen += 4;		// 帧总长 = 帧体长度 + 帧头长度(4)
 					}
 					
 					if((explain->indlen) >= (UNPACKBUFFSIZE-1)){
 						exp->searchstatus = SEARCHMACHINE_NULL;
-
 						continue;
 					}
 				}
@@ -207,7 +214,7 @@ static int   explain(dev_exp_t exp,uchar*frame,int len)
 	{
 
 	}
-	if (_BASE(exp).m_cb) _BASE(exp).m_cb(msgtype, frame, len, exp);
+	if (_BASE(exp).m_cb) _BASE(exp).m_cb(msgtype, frame, len, exp->_base.param);
 
 	return 0;
 }
